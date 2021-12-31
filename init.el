@@ -1,5 +1,5 @@
-(load "~/.emacs.d/emacs-27.2/minibuffer.el")
-(load "~/.emacs.d/emacs-27.2/simple.el")
+(load "~/.emacs.d/emacs-27.2/minibuffer.elc")
+(load "~/.emacs.d/emacs-27.2/simple.elc")
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (require 'fzf)
@@ -128,6 +128,11 @@
     (local-set-key (kbd "<mouse-8>") 'next-error)
     (local-set-key (kbd "<mouse-9>") 'previous-error)
     (when (derived-mode-p 'c-mode 'asm-mode) (ggtags-mode 1))))
+
+(add-hook 'ggtags-global-mode-hook
+  (lambda ()
+    (local-set-key (kbd "<mouse-1>") 'compile-goto-error)
+    (local-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)))
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (global-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)
