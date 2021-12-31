@@ -7,6 +7,9 @@
 (require 'goto-last-change)
 (require 'ggtags)
 
+(autoload 'View-scroll-half-page-forward "view")
+(autoload 'View-scroll-half-page-backward "view")
+
 (menu-bar-mode 0)
 (global-font-lock-mode 0)
 (global-eldoc-mode 0)
@@ -98,6 +101,22 @@
         (clipboard-kill-region (point-min) (point-max)))
       (message filename))))
 
+(defun isearch-repeat-forward+ ()
+  (interactive)
+  (unless isearch-forward
+    (goto-char isearch-other-end))
+  (isearch-repeat-forward)
+  (unless isearch-success
+    (isearch-repeat-forward)))
+
+(defun isearch-repeat-backward+ ()
+  (interactive)
+  (when (and isearch-forward isearch-other-end)
+    (goto-char isearch-other-end))
+  (isearch-repeat-backward)
+  (unless isearch-success
+    (isearch-repeat-backward)))
+
 (add-hook 'c-mode-common-hook
   (lambda ()
     (display-line-numbers-mode)
@@ -126,6 +145,8 @@
 (global-set-key (kbd "C-x C-f") 'find-file-dir)
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 (global-set-key (kbd "C-x C-k") 'kill-all-buffers)
+(global-set-key (kbd "C-v") 'View-scroll-half-page-forward)
+(global-set-key (kbd "M-v") 'View-scroll-half-page-backward)
 (global-set-key (kbd "C-x C-r") 'reopen-killed-file)
 (global-set-key (kbd "C-x M-b") 'xah-make-backup)
 (global-set-key (kbd "<f10>") 'tmm-menubar)
@@ -135,6 +156,8 @@
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
 (global-set-key (kbd "M-i") (lambda () (interactive) (minibuffer-with-setup-hook 'minibuffer-complete (call-interactively 'imenu))))
 (global-set-key (kbd "C-x b") (lambda () (interactive) (minibuffer-with-setup-hook 'minibuffer-complete (call-interactively 'switch-to-buffer))))
+(define-key isearch-mode-map (kbd "C-s") 'isearch-repeat-forward+)
+(define-key isearch-mode-map (kbd "C-r") 'isearch-repeat-backward+)
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

@@ -1527,23 +1527,7 @@ commands `next-error' and `previous-error'.
              1 3 nil nil 1 (2 font-lock-function-name-face)))
    compilation-error-regexp-alist-alist))
 
-(defun ggtags-abbreviate-file (start end)
-  (let ((inhibit-read-only t)
-        (amount (if (numberp ggtags-global-abbreviate-filename)
-                    (- (- end start) ggtags-global-abbreviate-filename)
-                  999))
-        (advance-word (lambda ()
-                        "Return the length of the text made invisible."
-                        (let ((wend (min end (progn (forward-word 1) (point))))
-                              (wbeg (max start (progn (backward-word 1) (point)))))
-                          (goto-char wend)
-                          (if (<= (- wend wbeg) 1)
-                              0
-                            (put-text-property (1+ wbeg) wend 'invisible t)
-                            (1- (- wend wbeg)))))))
-    (goto-char start)
-    (while (and (> amount 0) (> end (point)))
-      (cl-decf amount (funcall advance-word)))))
+(defun ggtags-abbreviate-file (start end))
 
 (defun ggtags-abbreviate-files (start end)
   (goto-char start)
