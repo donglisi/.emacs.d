@@ -89,6 +89,15 @@
   (let ((inhibit-message t) (default-directory "~/"))
     (minibuffer-with-setup-hook 'find-file-set-key (call-interactively 'find-file))))
 
+(defun copy-file-path-to-clipboard ()
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode) default-directory (buffer-file-name))))
+    (when filename
+      (with-temp-buffer
+        (insert filename)
+        (clipboard-kill-region (point-min) (point-max)))
+      (message filename))))
+
 (add-hook 'c-mode-common-hook
   (lambda ()
     (display-line-numbers-mode)
@@ -113,6 +122,7 @@
 (global-set-key (kbd "C-\\") 'goto-last-change)
 (global-set-key (kbd "C-x f") 'find-file-home)
 (global-set-key (kbd "C-x C-t") 'fzfk)
+(global-set-key (kbd "C-x p") 'copy-file-path-to-clipboard)
 (global-set-key (kbd "C-x C-f") 'find-file-dir)
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 (global-set-key (kbd "C-x C-k") 'kill-all-buffers)
