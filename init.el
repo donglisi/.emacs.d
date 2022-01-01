@@ -129,6 +129,10 @@
     (local-set-key (kbd "<mouse-9>") 'previous-error)
     (when (derived-mode-p 'c-mode 'asm-mode) (ggtags-mode 1))))
 
+(defun kill-current-buffer ()
+   (interactive)
+   (kill-buffer (current-buffer)))
+
 (add-hook 'ggtags-global-mode-hook
   (lambda ()
     (local-set-key (kbd "<mouse-1>") 'compile-goto-error)
@@ -140,7 +144,7 @@
 (global-set-key (kbd "<f4>") (lambda ()(interactive) (switch-to-buffer nil)))
 (global-set-key (kbd "<f5>") (lambda ()(interactive) (buffer-disable-undo) (buffer-enable-undo) (message "reset-undo")))
 (global-set-key (kbd "<f11>") 'count-lines-page)
-(global-set-key (kbd "<f12>") 'kill-this-buffer)
+(global-set-key (kbd "<f12>") 'kill-current-buffer)
 (global-set-key (kbd "<home>") 'beginning-of-buffer)
 (global-set-key (kbd "<end>") 'end-of-buffer)
 (global-set-key (kbd "C-\\") 'goto-last-change)
@@ -148,7 +152,7 @@
 (global-set-key (kbd "C-x C-t") 'fzfk)
 (global-set-key (kbd "C-x p") 'copy-file-path-to-clipboard)
 (global-set-key (kbd "C-x C-f") 'find-file-dir)
-(global-set-key (kbd "C-x k") 'kill-this-buffer)
+(global-set-key (kbd "C-x k") 'kill-current-buffer)
 (global-set-key (kbd "C-x C-k") 'kill-all-buffers)
 (global-set-key (kbd "C-v") 'View-scroll-half-page-forward)
 (global-set-key (kbd "M-v") 'View-scroll-half-page-backward)
