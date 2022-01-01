@@ -853,7 +853,6 @@ blocking emacs."
                                   (_ ggtags-completion-flag))))
     (setq ggtags-current-tag-name
           (cond (confirm
-                 (ggtags-update-tags)
                  (let ((completing-read-function
                         (or ggtags-completing-read-function
                             completing-read-function)))
