@@ -922,7 +922,6 @@ blocking emacs."
           (nth 4 (assoc (ggtags-global-search-id command default-directory)
                         ggtags-global-search-history)))
     (ggtags-navigation-mode +1)
-    (ggtags-update-tags)
     (ggtags-with-current-project
       (with-current-buffer (with-display-buffer-no-window
                              (compilation-start command 'ggtags-global-mode))
