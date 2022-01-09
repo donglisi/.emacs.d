@@ -117,6 +117,14 @@
   (unless isearch-success
     (isearch-repeat-backward)))
 
+(defun imenu-completion ()
+  (interactive)
+  (minibuffer-with-setup-hook 'minibuffer-complete (call-interactively 'imenu)))
+
+(defun switch-buffer-completion ()
+  (interactive)
+  (minibuffer-with-setup-hook 'minibuffer-complete (call-interactively 'switch-to-buffer)))
+
 (add-hook 'c-mode-common-hook
   (lambda ()
     (display-line-numbers-mode)
@@ -138,11 +146,16 @@
     (local-set-key (kbd "<mouse-1>") 'compile-goto-error)
     (local-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)))
 
+(add-hook 'completion-list-mode-hook
+  (lambda ()
+    (local-set-key (kbd "<mouse-1>") 'choose-completion)
+    (local-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)))
+
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-(global-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)
 (global-set-key (kbd "C-x M-f") 'find-file-root)
-(global-set-key (kbd "<f4>") (lambda ()(interactive) (switch-to-buffer nil)))
-(global-set-key (kbd "<f5>") (lambda ()(interactive) (buffer-disable-undo) (buffer-enable-undo) (message "reset-undo")))
+(global-set-key (kbd "<f4>") (lambda () (interactive) (switch-to-buffer nil)))
+(global-set-key (kbd "<f5>") (lambda () (interactive) (buffer-disable-undo) (buffer-enable-undo) (message "reset-undo")))
+(global-set-key (kbd "<f10>") 'tmm-menubar)
 (global-set-key (kbd "<f11>") 'count-lines-page)
 (global-set-key (kbd "<f12>") 'kill-current-buffer)
 (global-set-key (kbd "<home>") 'beginning-of-buffer)
@@ -157,14 +170,16 @@
 (global-set-key (kbd "C-v") 'View-scroll-half-page-forward)
 (global-set-key (kbd "M-v") 'View-scroll-half-page-backward)
 (global-set-key (kbd "C-x C-r") 'reopen-killed-file)
-(global-set-key (kbd "C-x M-b") 'xah-make-backup)
-(global-set-key (kbd "<f10>") 'tmm-menubar)
 (global-set-key (kbd "M-e") 'eval-region-unmark)
 (global-set-key (kbd "M-p") 'move-line-up)
 (global-set-key (kbd "M-n") 'move-line-down)
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
-(global-set-key (kbd "M-i") (lambda () (interactive) (minibuffer-with-setup-hook 'minibuffer-complete (call-interactively 'imenu))))
-(global-set-key (kbd "C-x b") (lambda () (interactive) (minibuffer-with-setup-hook 'minibuffer-complete (call-interactively 'switch-to-buffer))))
+(global-set-key (kbd "M-i") 'imenu-completion)
+(global-set-key (kbd "C-x b") 'switch-buffer-completion)
+(global-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)
+(global-set-key (kbd "<mouse-6>") 'switch-buffer-completion)
+(global-set-key (kbd "<mouse-7>") 'imenu-completion)
+
 (define-key isearch-mode-map (kbd "C-s") 'isearch-repeat-forward+)
 (define-key isearch-mode-map (kbd "C-r") 'isearch-repeat-backward+)
 
@@ -177,3 +192,9 @@
  '(line-number ((t (:foreground "black"))))
  '(mode-line ((t (:background "grey75" :foreground "black"))))
  '(mode-line-inactive ((t (:background "grey75" :foreground "black" :weight light)))))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(imenu-use-popup-menu nil))
