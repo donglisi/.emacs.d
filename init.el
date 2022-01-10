@@ -6,6 +6,7 @@
 (require 'anzu)
 (require 'goto-last-change)
 (require 'ggtags)
+(require 'google-translate)
 
 (autoload 'View-scroll-half-page-forward "view")
 (autoload 'View-scroll-half-page-backward "view")
@@ -22,6 +23,7 @@
 (blink-cursor-mode 0)
 (show-paren-mode)
 (delete-selection-mode)
+(global-google-translate-mode)
 
 (setq inhibit-startup-screen t)
 (setq auto-save-list-file-prefix nil)
@@ -92,15 +94,6 @@
   (let ((inhibit-message t) (default-directory "~/"))
     (minibuffer-with-setup-hook 'find-file-set-key (call-interactively 'find-file))))
 
-(defun copy-file-path-to-clipboard ()
-  (interactive)
-  (let ((filename (if (equal major-mode 'dired-mode) default-directory (buffer-file-name))))
-    (when filename
-      (with-temp-buffer
-        (insert filename)
-        (clipboard-kill-region (point-min) (point-max)))
-      (message filename))))
-
 (defun isearch-repeat-forward+ ()
   (interactive)
   (unless isearch-forward
@@ -163,7 +156,6 @@
 (global-set-key (kbd "C-\\") 'goto-last-change)
 (global-set-key (kbd "C-x f") 'find-file-home)
 (global-set-key (kbd "C-x C-t") 'fzfk)
-(global-set-key (kbd "C-x p") 'copy-file-path-to-clipboard)
 (global-set-key (kbd "C-x C-f") 'find-file-dir)
 (global-set-key (kbd "C-x k") 'kill-current-buffer)
 (global-set-key (kbd "C-x C-k") 'kill-all-buffers)
@@ -197,4 +189,5 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(imenu-use-popup-menu nil))
+ '(imenu-use-popup-menu nil)
+ '(max-mini-window-height 0.9))

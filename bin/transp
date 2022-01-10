@@ -1,0 +1,7 @@
+#!/bin/bash
+
+export https_proxy=http://127.0.0.1:7890
+str=$(echo "$*" | sed -E 's/^\s+\*\s+//' | tr '\n' ' ')
+echo "$str"
+echo "$str" | trans :zh -brief
+
