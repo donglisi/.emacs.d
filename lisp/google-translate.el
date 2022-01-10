@@ -1,6 +1,10 @@
-(defun translation-phrase (beg end)
+(defun translation-selection (beg end)
   (interactive "r")
-  (message (shell-command-to-string (concat "~/.emacs.d/bin/transp \"" (buffer-substring beg end) "\""))))
+  (message (shell-command-to-string (concat "~/.emacs.d/bin/trans \"" (buffer-substring beg end) "\""))))
+
+(defun translation-selection-brief (beg end)
+  (interactive "r")
+  (message (shell-command-to-string (concat "~/.emacs.d/bin/transb \"" (buffer-substring beg end) "\""))))
 
 (defun translation-word ()
   (interactive)
@@ -8,7 +12,8 @@
 
 (defvar google-translate-mode-keymap
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "C-c p") 'translation-phrase)
+    (define-key map (kbd "C-c v") 'translation-selection)
+    (define-key map (kbd "C-c b") 'translation-selection-brief)
     (define-key map (kbd "C-c w") 'translation-word) map))
 
 (define-minor-mode google-translate-mode

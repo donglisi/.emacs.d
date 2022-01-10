@@ -110,6 +110,9 @@
   (unless isearch-success
     (isearch-repeat-backward)))
 
+(define-key isearch-mode-map (kbd "C-s") 'isearch-repeat-forward+)
+(define-key isearch-mode-map (kbd "C-r") 'isearch-repeat-backward+)
+
 (defun imenu-completion ()
   (interactive)
   (minibuffer-with-setup-hook 'minibuffer-complete (call-interactively 'imenu)))
@@ -134,6 +137,12 @@
    (interactive)
    (kill-buffer (current-buffer)))
 
+(defun search-selection (beg end)
+      (interactive "r")
+      (kill-ring-save beg end)
+      (isearch-mode t nil nil nil)
+      (isearch-yank-pop))
+
 (add-hook 'ggtags-global-mode-hook
   (lambda ()
     (local-set-key (kbd "<mouse-1>") 'compile-goto-error)
@@ -146,6 +155,7 @@
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (global-set-key (kbd "C-x M-f") 'find-file-root)
+(global-set-key (kbd "<f3>") 'search-selection)
 (global-set-key (kbd "<f4>") (lambda () (interactive) (switch-to-buffer nil)))
 (global-set-key (kbd "<f5>") (lambda () (interactive) (buffer-disable-undo) (buffer-enable-undo) (message "reset-undo")))
 (global-set-key (kbd "<f10>") 'tmm-menubar)
@@ -171,9 +181,6 @@
 (global-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)
 (global-set-key (kbd "<mouse-6>") 'switch-buffer-completion)
 (global-set-key (kbd "<mouse-7>") 'imenu-completion)
-
-(define-key isearch-mode-map (kbd "C-s") 'isearch-repeat-forward+)
-(define-key isearch-mode-map (kbd "C-r") 'isearch-repeat-backward+)
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
