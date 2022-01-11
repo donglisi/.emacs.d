@@ -2,11 +2,13 @@
 (load "~/.emacs.d/emacs-27.2/simple.el")
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
+
 (require 'fzf)
 (require 'anzu)
 (require 'goto-last-change)
 (require 'ggtags)
 (require 'google-translate)
+(require 'sudo-save)
 
 (autoload 'View-scroll-half-page-forward "view")
 (autoload 'View-scroll-half-page-backward "view")
@@ -37,7 +39,7 @@
 
 (setq-default mouse-1-click-follows-link nil)
 (setq-default enable-recursive-minibuffers t)
-(setq-default mode-line-format (list '(:eval (if (buffer-file-name) "%f" "%b")) " %l"))
+(setq-default mode-line-format (list '(:eval (if (buffer-file-name) "%f" "%b")) " (%l %C)"))
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -110,9 +112,6 @@
   (unless isearch-success
     (isearch-repeat-backward)))
 
-(define-key isearch-mode-map (kbd "C-s") 'isearch-repeat-forward+)
-(define-key isearch-mode-map (kbd "C-r") 'isearch-repeat-backward+)
-
 (defun imenu-completion ()
   (interactive)
   (minibuffer-with-setup-hook 'minibuffer-complete (call-interactively 'imenu)))
@@ -124,6 +123,7 @@
 (add-hook 'c-mode-common-hook
   (lambda ()
     (display-line-numbers-mode)
+    (local-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
     (local-set-key (kbd "<double-down-mouse-1>") (lambda ()(interactive)))
     (local-set-key (kbd "<double-mouse-1>") 'ggtags-find-tag-dwim)
     (local-set-key (kbd "<mouse-2>") 'xref-pop-marker-stack)
@@ -152,6 +152,9 @@
   (lambda ()
     (local-set-key (kbd "<mouse-1>") 'choose-completion)
     (local-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)))
+
+(define-key isearch-mode-map (kbd "C-s") 'isearch-repeat-forward+)
+(define-key isearch-mode-map (kbd "C-r") 'isearch-repeat-backward+)
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (global-set-key (kbd "C-x M-f") 'find-file-root)
