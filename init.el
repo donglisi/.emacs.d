@@ -1,5 +1,5 @@
-(load "~/.emacs.d/emacs-27.2/minibuffer.elc")
-(load "~/.emacs.d/emacs-27.2/simple.elc")
+(load "~/.emacs.d/emacs-27.2/minibuffer.el")
+(load "~/.emacs.d/emacs-27.2/simple.el")
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (require 'fzf)
