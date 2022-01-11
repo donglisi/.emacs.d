@@ -10,9 +10,6 @@
 (require 'google-translate)
 (require 'sudo-save)
 
-(autoload 'View-scroll-half-page-forward "view")
-(autoload 'View-scroll-half-page-backward "view")
-
 (menu-bar-mode 0)
 (global-font-lock-mode 0)
 (global-eldoc-mode 0)
@@ -120,19 +117,6 @@
   (interactive)
   (minibuffer-with-setup-hook 'minibuffer-complete (call-interactively 'switch-to-buffer)))
 
-(add-hook 'c-mode-common-hook
-  (lambda ()
-    (display-line-numbers-mode)
-    (local-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
-    (local-set-key (kbd "<double-down-mouse-1>") (lambda ()(interactive)))
-    (local-set-key (kbd "<double-mouse-1>") 'ggtags-find-tag-dwim)
-    (local-set-key (kbd "<mouse-2>") 'xref-pop-marker-stack)
-    (local-set-key (kbd "M-n") 'next-error)
-    (local-set-key (kbd "M-p") 'previous-error)
-    (local-set-key (kbd "<mouse-8>") 'next-error)
-    (local-set-key (kbd "<mouse-9>") 'previous-error)
-    (when (derived-mode-p 'c-mode 'asm-mode) (ggtags-mode 1))))
-
 (defun kill-current-buffer ()
    (interactive)
    (kill-buffer (current-buffer)))
@@ -153,6 +137,29 @@
     (local-set-key (kbd "<mouse-1>") 'choose-completion)
     (local-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)))
 
+(add-hook 'c-mode-common-hook
+  (lambda ()
+    (display-line-numbers-mode)
+    (local-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
+    (local-set-key (kbd "<double-down-mouse-1>") (lambda ()(interactive)))
+    (local-set-key (kbd "<double-mouse-1>") 'ggtags-find-tag-dwim)
+    (local-set-key (kbd "<mouse-2>") 'xref-pop-marker-stack)
+    (local-set-key (kbd "M-n") 'next-error)
+    (local-set-key (kbd "M-p") 'previous-error)
+    (local-set-key (kbd "<mouse-8>") 'next-error)
+    (local-set-key (kbd "<mouse-9>") 'previous-error)
+    (when (derived-mode-p 'c-mode 'asm-mode) (ggtags-mode 1))))
+
+(defun highlight-toggle ()
+  (interactive)
+  (let ((str (get-char-property (point) 'hi-lock-overlay-regexp)))
+     (if str (hi-lock-unface-buffer str) (hi-lock-face-symbol-at-point))))
+
+(defun mouse-highlight-toggle (click)
+  (interactive "e")
+  (mouse-set-point click)
+  (highlight-toggle))
+
 (define-key isearch-mode-map (kbd "C-s") 'isearch-repeat-forward+)
 (define-key isearch-mode-map (kbd "C-r") 'isearch-repeat-backward+)
 
@@ -172,8 +179,6 @@
 (global-set-key (kbd "C-x C-f") 'find-file-dir)
 (global-set-key (kbd "C-x k") 'kill-current-buffer)
 (global-set-key (kbd "C-x C-k") 'kill-all-buffers)
-(global-set-key (kbd "C-v") 'View-scroll-half-page-forward)
-(global-set-key (kbd "M-v") 'View-scroll-half-page-backward)
 (global-set-key (kbd "C-x C-r") 'reopen-killed-file)
 (global-set-key (kbd "M-e") 'eval-region-unmark)
 (global-set-key (kbd "M-p") 'move-line-up)
@@ -182,6 +187,7 @@
 (global-set-key (kbd "M-i") 'imenu-completion)
 (global-set-key (kbd "C-x b") 'switch-buffer-completion)
 (global-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)
+(global-set-key (kbd "<mouse-3>") 'mouse-highlight-toggle)
 (global-set-key (kbd "<mouse-6>") 'switch-buffer-completion)
 (global-set-key (kbd "<mouse-7>") 'imenu-completion)
 
@@ -199,5 +205,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(hi-lock-file-patterns-policy 'never)
  '(imenu-use-popup-menu nil)
  '(max-mini-window-height 0.9))
