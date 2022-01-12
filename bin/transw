@@ -1,5 +1,5 @@
 #!/bin/bash
 
 export https_proxy=http://127.0.0.1:7890
-trans :zh -b "$*" | head -n 30
+trans :zh "$*" | head -n 30
 
