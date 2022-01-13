@@ -1,6 +1,6 @@
-(load "~/.emacs.d/emacs-27.2/minibuffer.el")
-(load "~/.emacs.d/emacs-27.2/simple.el")
-(load "~/.emacs.d/emacs-27.2/compile.el")
+(load "~/.emacs.d/27.2/minibuffer.el")
+(load "~/.emacs.d/27.2/simple.el")
+(load "~/.emacs.d/27.2/compile.el")
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
