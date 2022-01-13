@@ -1340,11 +1340,7 @@ FMTS is a list of format specs for transforming the file name.
     ;; Must start with face
     `(font-lock-face ,compilation-message-face
       compilation-message ,(compilation--make-message loc type end-loc)
-      help-echo ,(if col
-                     "mouse-2: visit this file, line and column"
-                   (if line
-                       "mouse-2: visit this file and line"
-                     "mouse-2: visit this file"))
+      help-echo , nil
       keymap compilation-button-map
       mouse-face highlight)))
 
