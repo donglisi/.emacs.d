@@ -1,5 +1,6 @@
 (load "~/.emacs.d/emacs-27.2/minibuffer.el")
 (load "~/.emacs.d/emacs-27.2/simple.el")
+(load "~/.emacs.d/emacs-27.2/compile.el")
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
@@ -186,6 +187,7 @@
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
 (global-set-key (kbd "M-i") 'imenu-completion)
 (global-set-key (kbd "C-x b") 'switch-buffer-completion)
+(global-set-key (kbd "C-M-l") (lambda () (interactive) (recenter-top-bottom -1)))
 (global-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)
 (global-set-key (kbd "<mouse-3>") 'mouse-highlight-toggle)
 (global-set-key (kbd "<mouse-6>") 'switch-buffer-completion)
