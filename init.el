@@ -34,6 +34,7 @@
 (setq read-file-name-completion-ignore-case t)
 (setq next-error-highlight nil)
 (setq ggtags-highlight-tag nil)
+(setq scroll-conservatively 10000)
 
 (setq-default mouse-1-click-follows-link nil)
 (setq-default enable-recursive-minibuffers t)
