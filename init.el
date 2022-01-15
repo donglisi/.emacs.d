@@ -43,6 +43,7 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 (set-face-attribute 'region nil :background "#666" :foreground "#ffffff")
 (remove-hook 'xref-after-return-hook 'xref-pulse-momentarily)
+(setenv "MANWIDTH" "192")
 
 (defun kill-all-buffers () (interactive) (mapc 'kill-buffer (buffer-list)))
 
@@ -128,6 +129,8 @@
       (isearch-mode t nil nil nil)
       (isearch-yank-pop))
 
+(add-hook 'Man-mode-hook 'delete-window)
+
 (add-hook 'ggtags-global-mode-hook
   (lambda ()
     (local-set-key (kbd "<mouse-1>") 'compile-goto-error)
@@ -149,7 +152,7 @@
     (local-set-key (kbd "M-p") 'previous-error)
     (local-set-key (kbd "<mouse-8>") 'next-error)
     (local-set-key (kbd "<mouse-9>") 'previous-error)
-    (when (derived-mode-p 'c-mode 'asm-mode) (ggtags-mode 1))))
+    (when (derived-mode-p 'c-mode 'asm-mode) (ggtags-mode))))
 
 (defun highlight-toggle ()
   (interactive)
@@ -185,6 +188,7 @@
 (global-set-key (kbd "M-p") 'move-line-up)
 (global-set-key (kbd "M-n") 'move-line-down)
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
+(global-set-key (kbd "M-m") 'man)
 (global-set-key (kbd "M-i") 'imenu-completion)
 (global-set-key (kbd "C-x b") 'switch-buffer-completion)
 (global-set-key (kbd "C-M-l") (lambda () (interactive) (recenter-top-bottom -1)))
