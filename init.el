@@ -34,10 +34,11 @@
 (setq read-file-name-completion-ignore-case t)
 (setq next-error-highlight nil)
 (setq ggtags-highlight-tag nil)
-(setq scroll-conservatively 10000)
+(setq scroll-step 1)
 
 (setq-default mouse-1-click-follows-link nil)
 (setq-default enable-recursive-minibuffers t)
+(setq-default explicit-shell-file-name "~/.local/bin/bashn")
 (setq-default mode-line-format (list '(:eval (if (buffer-file-name) "%f" "%b")) " (%l %C)"))
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
@@ -130,6 +131,27 @@
       (isearch-mode t nil nil nil)
       (isearch-yank-pop))
 
+(defun highlight-toggle ()
+  (interactive)
+  (let ((str (get-char-property (point) 'hi-lock-overlay-regexp)))
+     (if str (hi-lock-unface-buffer str) (hi-lock-face-symbol-at-point))))
+
+(defun mouse-highlight-toggle (click)
+  (interactive "e")
+  (mouse-set-point click)
+  (highlight-toggle))
+
+(defun move-line-up ()
+  (interactive)
+  (transpose-lines 1)
+  (forward-line -2))
+
+(defun move-line-down ()
+  (interactive)
+  (forward-line 1)
+  (transpose-lines 1)
+  (forward-line -1))
+
 (add-hook 'Man-mode-hook 'delete-window)
 
 (add-hook 'ggtags-global-mode-hook
@@ -145,7 +167,6 @@
 (add-hook 'c-mode-common-hook
   (lambda ()
     (display-line-numbers-mode)
-    (local-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
     (local-set-key (kbd "<double-down-mouse-1>") (lambda ()(interactive)))
     (local-set-key (kbd "<double-mouse-1>") 'ggtags-find-tag-dwim)
     (local-set-key (kbd "<mouse-2>") 'xref-pop-marker-stack)
@@ -154,16 +175,6 @@
     (local-set-key (kbd "<mouse-8>") 'next-error)
     (local-set-key (kbd "<mouse-9>") 'previous-error)
     (when (derived-mode-p 'c-mode 'asm-mode) (ggtags-mode))))
-
-(defun highlight-toggle ()
-  (interactive)
-  (let ((str (get-char-property (point) 'hi-lock-overlay-regexp)))
-     (if str (hi-lock-unface-buffer str) (hi-lock-face-symbol-at-point))))
-
-(defun mouse-highlight-toggle (click)
-  (interactive "e")
-  (mouse-set-point click)
-  (highlight-toggle))
 
 (define-key isearch-mode-map (kbd "C-s") 'isearch-repeat-forward+)
 (define-key isearch-mode-map (kbd "C-r") 'isearch-repeat-backward+)
@@ -190,13 +201,16 @@
 (global-set-key (kbd "M-n") 'move-line-down)
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
 (global-set-key (kbd "M-m") 'man)
+(global-set-key (kbd "M-c") 'shell-command)
 (global-set-key (kbd "M-i") 'imenu-completion)
 (global-set-key (kbd "C-x b") 'switch-buffer-completion)
 (global-set-key (kbd "C-M-l") (lambda () (interactive) (recenter-top-bottom -1)))
+(global-set-key (kbd "C-M-r") (lambda () (interactive) (move-to-window-line-top-bottom -1)))
 (global-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)
 (global-set-key (kbd "<mouse-3>") 'mouse-highlight-toggle)
 (global-set-key (kbd "<mouse-6>") 'switch-buffer-completion)
 (global-set-key (kbd "<mouse-7>") 'imenu-completion)
+(global-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
