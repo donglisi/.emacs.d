@@ -38,7 +38,6 @@
 
 (setq-default mouse-1-click-follows-link nil)
 (setq-default enable-recursive-minibuffers t)
-(setq-default explicit-shell-file-name "~/.local/bin/bashn")
 (setq-default mode-line-format (list '(:eval (if (buffer-file-name) "%f" "%b")) " (%l %C)"))
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
@@ -201,7 +200,6 @@
 (global-set-key (kbd "M-n") 'move-line-down)
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
 (global-set-key (kbd "M-m") 'man)
-(global-set-key (kbd "M-c") 'shell-command)
 (global-set-key (kbd "M-i") 'imenu-completion)
 (global-set-key (kbd "C-x b") 'switch-buffer-completion)
 (global-set-key (kbd "C-M-l") (lambda () (interactive) (recenter-top-bottom -1)))
