@@ -1,14 +1,18 @@
+(defun trans-text (cmd beg end)
+  (interactive "r")
+  (concat cmd " \"" (replace-regexp-in-string "`" "\\`" (buffer-substring beg end) nil t) "\""))
+
 (defun translation-comment (beg end)
   (interactive "r")
-  (message (shell-command-to-string (concat "~/.emacs.d/bin/transp \"" (buffer-substring beg end) "\""))))
+  (message "%s" (shell-command-to-string (trans-text "~/.emacs.d/bin/transc" beg end))))
 
 (defun translation-text (beg end)
   (interactive "r")
-  (message (shell-command-to-string (concat "~/.emacs.d/bin/trans \"" (buffer-substring beg end) "\""))))
+  (message "%s" (shell-command-to-string (trans-text "~/.emacs.d/bin/trans" beg end))))
 
 (defun translation-word ()
   (interactive)
-  (message (shell-command-to-string (concat "~/.emacs.d/bin/transw " (thing-at-point 'word 'no-properties)))))
+  (message "%s" (shell-command-to-string (concat "~/.emacs.d/bin/transw " (thing-at-point 'word 'no-properties)))))
 
 (defvar google-translate-mode-keymap
   (let ((map (make-sparse-keymap)))
