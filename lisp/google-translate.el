@@ -10,9 +10,10 @@
   (interactive "r")
   (message "%s" (shell-command-to-string (trans-text "~/.emacs.d/bin/trans" beg end))))
 
-(defun translation-word ()
-  (interactive)
-  (message "%s" (shell-command-to-string (concat "~/.emacs.d/bin/transw " (thing-at-point 'word 'no-properties)))))
+(defun translation-word (beg end)
+  (interactive "r")
+  (message "%s" (shell-command-to-string (concat "~/.emacs.d/bin/transw " 
+          (if (use-region-p) (buffer-substring beg end) (thing-at-point 'word 'no-properties))))))
 
 (defvar google-translate-mode-keymap
   (let ((map (make-sparse-keymap)))
