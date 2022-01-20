@@ -10,6 +10,4 @@ echo $str
 
 echo
 
-trans -s en :zh -b "$str"
-
-
+trans -s en :zh -b "$str" 2> /dev/null

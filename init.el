@@ -183,6 +183,12 @@
     (local-set-key (kbd "<mouse-9>") 'previous-error)
     (when (derived-mode-p 'c-mode 'asm-mode) (ggtags-mode))))
 
+(add-hook 'Info-mode-hook
+  (lambda ()
+    (local-set-key (kbd "<double-down-mouse-1>") (lambda ()(interactive)))
+    (local-set-key (kbd "<double-mouse-1>") 'Info-mouse-follow-nearest-node)
+    (local-set-key (kbd "<mouse-2>") 'Info-up)))
+
 (define-key isearch-mode-map (kbd "C-s") 'isearch-repeat-forward+)
 (define-key isearch-mode-map (kbd "C-r") 'isearch-repeat-backward+)
 
@@ -234,4 +240,6 @@
  ;; If there is more than one, they won't work right.
  '(hi-lock-file-patterns-policy 'never)
  '(imenu-use-popup-menu nil)
- '(max-mini-window-height 0.9))
+ '(max-mini-window-height 0.45))
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
