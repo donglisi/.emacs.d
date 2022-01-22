@@ -1,13 +1,8 @@
 #!/bin/bash
 
-export https_proxy=http://127.0.0.1:7890
-
-
-str="$*"
+str="$1"
 str=$(echo "$str" | perl -pe 's/-\n//')
 str=$(echo "$str" | tr '\n' ' ')
 echo $str
-
 echo
-
-trans -s en :zh -b "$str" 2> /dev/null
+transw "$str"
