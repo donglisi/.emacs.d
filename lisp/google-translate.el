@@ -1,7 +1,9 @@
 (defun transp (cmd beg end)
   (interactive "r")
-  (message "%s" (shell-command-to-string (concat 
-	cmd " \"" (replace-regexp-in-string "`" "\\`" (buffer-substring beg end) nil t) "\""))))
+  (let ((str (buffer-substring beg end)))
+    (setq str (replace-regexp-in-string "`" "\\`" str nil t))
+    (setq str (replace-regexp-in-string "\"" "\\\"" str nil t))
+    (message "%s" (shell-command-to-string (concat cmd " \"" str "\"")))))
 
 (defun translation-comment (beg end)
   (interactive "r")
