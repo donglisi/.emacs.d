@@ -3,7 +3,7 @@
   (let ((str (buffer-substring beg end)))
     (setq str (replace-regexp-in-string "`" "\\`" str nil t))
     (setq str (replace-regexp-in-string "\"" "\\\"" str nil t))
-    (message "%s" (shell-command-to-string (concat cmd " \"" str "\"")))))
+    (message "%s" (shell-command-to-string (concat cmd " \"" str "\" | head -20")))))
 
 (defun translation-comment (beg end)
   (interactive "r")
@@ -11,11 +11,11 @@
 
 (defun translation-paragraph (beg end)
   (interactive "r")
-  (transp "~/.emacs.d/bin/transp" beg end))
+  (transp "transp" beg end))
 
 (defun translation-word ()
   (interactive)
-  (message (shell-command-to-string (concat "transw " (thing-at-point 'word 'no-properties) " | head -n 20"))))
+  (message (shell-command-to-string (concat "transw " (thing-at-point 'word 'no-properties) " | head -20"))))
 
 (defvar google-translate-mode-keymap
   (let ((map (make-sparse-keymap)))

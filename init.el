@@ -215,6 +215,8 @@
 (global-set-key (kbd "<mouse-6>") 'switch-buffer-completion)
 (global-set-key (kbd "<mouse-7>") 'imenu-completion)
 (global-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
+(global-set-key "\S-\M-n" "\C-u1\C-v")
+(global-set-key "\S-\M-p" "\C-u1\M-v")
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
