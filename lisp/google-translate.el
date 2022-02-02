@@ -11,7 +11,7 @@
 
 (defun translation-paragraph (beg end)
   (interactive "r")
-  (transp "transp" beg end))
+  (transp "transw" beg end))
 
 (defun translation-word ()
   (interactive)

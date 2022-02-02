@@ -1,7 +1,5 @@
 #!/bin/bash
 
 str=$(echo "$*" | sed -E 's/^\s+\*\s+//' | tr '\n' ' ' | awk '{$1=$1};1')
-echo "$str"
-echo
 transw "$str"
 
