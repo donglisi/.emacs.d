@@ -7,15 +7,18 @@
 
 (defun translation-comment (beg end)
   (interactive "r")
-  (transp "~/.emacs.d/bin/transc" beg end))
+  (let ((default-directory "~/"))
+    (transp "~/.emacs.d/bin/transc" beg end)))
 
 (defun translation-paragraph (beg end)
   (interactive "r")
-  (transp "transw" beg end))
+  (let ((default-directory "~/"))
+    (transp "transw" beg end)))
 
 (defun translation-word ()
   (interactive)
-  (message (shell-command-to-string (concat "transw " (thing-at-point 'word 'no-properties) " | head -20"))))
+  (let ((default-directory "~/"))
+    (message (shell-command-to-string (concat "transw " (thing-at-point 'word 'no-properties) " | head -20")))))
 
 (defvar google-translate-mode-keymap
   (let ((map (make-sparse-keymap)))

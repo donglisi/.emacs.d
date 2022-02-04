@@ -217,6 +217,8 @@
 (global-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
 (global-set-key "\S-\M-n" "\C-u1\C-v")
 (global-set-key "\S-\M-p" "\C-u1\M-v")
+(global-set-key (kbd "<prior>") (lambda () (interactive) (scroll-down-command 11)))
+(global-set-key (kbd "<next>") (lambda () (interactive) (scroll-up-command 11)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -235,6 +237,7 @@
  '(enable-local-variables nil)
  '(hi-lock-file-patterns-policy 'never)
  '(imenu-use-popup-menu nil)
- '(max-mini-window-height 0.45))
+ '(max-mini-window-height 0.45)
+ '(next-screen-context-lines 1))
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
