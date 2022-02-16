@@ -151,6 +151,10 @@
   (transpose-lines 1)
   (forward-line -1))
 
+(defun kill-other-buffers ()
+  (interactive)
+  (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
+
 (add-hook 'Man-mode-hook 'delete-window)
 
 (add-hook 'ggtags-global-mode-hook
@@ -200,6 +204,7 @@
 (global-set-key (kbd "C-x C-f") 'find-file-dir)
 (global-set-key (kbd "C-x k") 'kill-current-buffer)
 (global-set-key (kbd "C-x C-k") 'kill-all-buffers)
+(global-set-key (kbd "C-x C-o") 'kill-other-buffers)
 (global-set-key (kbd "C-x C-r") 'reopen-killed-file)
 (global-set-key (kbd "M-e") 'eval-region-unmark)
 (global-set-key (kbd "M-p") 'move-line-up)
@@ -215,8 +220,8 @@
 (global-set-key (kbd "<mouse-6>") 'switch-buffer-completion)
 (global-set-key (kbd "<mouse-7>") 'imenu-completion)
 (global-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
-(global-set-key "\S-\M-n" "\C-u1\C-v")
-(global-set-key "\S-\M-p" "\C-u1\M-v")
+(global-set-key "\S-\M-p" "\C-u1\C-v")
+(global-set-key "\S-\M-n" "\C-u1\M-v")
 (global-set-key (kbd "<prior>") (lambda () (interactive) (scroll-down-command 11)))
 (global-set-key (kbd "<next>") (lambda () (interactive) (scroll-up-command 11)))
 
@@ -236,8 +241,10 @@
  ;; If there is more than one, they won't work right.
  '(enable-local-variables nil)
  '(hi-lock-file-patterns-policy 'never)
+ '(hi-lock-highlight-range 2000000)
  '(imenu-use-popup-menu nil)
  '(max-mini-window-height 0.45)
+ '(mouse-wheel-progressive-speed nil)
  '(next-screen-context-lines 1))
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
