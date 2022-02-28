@@ -1,6 +1,7 @@
 (load "~/.emacs.d/27.2/minibuffer.el")
 (load "~/.emacs.d/27.2/simple.el")
 (load "~/.emacs.d/27.2/compile.el")
+(load "~/.emacs.d/27.2/cc-mode.el")
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
@@ -205,6 +206,8 @@
 (global-set-key (kbd "C-x C-k") 'kill-all-buffers)
 (global-set-key (kbd "C-x C-o") 'kill-other-buffers)
 (global-set-key (kbd "C-x C-r") 'reopen-killed-file)
+(global-set-key (kbd "C-M-u") 'upcase-region)
+(global-set-key (kbd "C-M-d") 'downcase-region)
 (global-set-key (kbd "M-e") 'eval-region-unmark)
 (global-set-key (kbd "M-p") 'move-line-up)
 (global-set-key (kbd "M-n") 'move-line-down)
