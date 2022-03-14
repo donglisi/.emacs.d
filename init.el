@@ -228,6 +228,7 @@
 (global-set-key (kbd "<prior>") (lambda () (interactive) (scroll-down-command 11)))
 (global-set-key (kbd "<next>") (lambda () (interactive) (scroll-up-command 11)))
 
+(customize-set-variable 'search-whitespace-regexp nil)
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
