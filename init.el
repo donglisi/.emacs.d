@@ -9,7 +9,6 @@
 (require 'anzu)
 (require 'goto-last-change)
 (require 'ggtags)
-(require 'google-translate)
 
 (menu-bar-mode 0)
 (global-font-lock-mode 0)
@@ -23,7 +22,6 @@
 (blink-cursor-mode 0)
 (show-paren-mode)
 (delete-selection-mode)
-(global-google-translate-mode)
 
 (setq inhibit-startup-screen t)
 (setq auto-save-list-file-prefix nil)
@@ -185,6 +183,11 @@
     (local-set-key (kbd "<double-mouse-1>") 'Info-mouse-follow-nearest-node)
     (local-set-key (kbd "<mouse-2>") 'Info-up)))
 
+(defun translation-word ()
+  (interactive)
+  (let ((default-directory "~/"))
+    (message (shell-command-to-string (concat "transw " (thing-at-point 'word 'no-properties) " | head -20")))))
+
 (define-key isearch-mode-map (kbd "C-s") 'isearch-repeat-forward+)
 (define-key isearch-mode-map (kbd "C-r") 'isearch-repeat-backward+)
 
@@ -212,6 +215,7 @@
 (global-set-key (kbd "M-p") 'move-line-up)
 (global-set-key (kbd "M-n") 'move-line-down)
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
+(global-set-key (kbd "C-c w") 'translation-word)
 (global-set-key (kbd "M-m") 'man)
 (global-set-key (kbd "M-o") 'info-display-manual)
 (global-set-key (kbd "M-i") 'imenu-completion)

@@ -1,5 +1,0 @@
-#!/bin/bash
-
-str=$(echo "$*" | sed -E 's/^\s+\*\s+//')
-transw "$str"
-
