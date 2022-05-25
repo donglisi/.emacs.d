@@ -42,7 +42,7 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 (set-face-attribute 'region nil :background "#666" :foreground "#ffffff")
 (remove-hook 'xref-after-return-hook 'xref-pulse-momentarily)
-(setenv "MANWIDTH" "192")
+(setenv "MANWIDTH" "276")
 
 (defun kill-all-buffers () (interactive) (mapc 'kill-buffer (buffer-list)))
 
@@ -209,6 +209,7 @@
 (global-set-key (kbd "C-x C-k") 'kill-all-buffers)
 (global-set-key (kbd "C-x C-o") 'kill-other-buffers)
 (global-set-key (kbd "C-x C-r") 'reopen-killed-file)
+(global-set-key (kbd "C-x C-p") 'find-file-at-point)
 (global-set-key (kbd "C-M-u") 'upcase-region)
 (global-set-key (kbd "C-M-d") 'downcase-region)
 (global-set-key (kbd "M-e") 'eval-region-unmark)
@@ -238,7 +239,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Liberation Mono" :foundry "1ASC" :slant normal :weight normal :height 128 :width normal))))
+ '(default ((t (:family "Liberation Mono" :foundry "1ASC" :slant normal :weight normal :height 181 :width normal))))
  '(line-number ((t (:foreground "black"))))
  '(mode-line ((t (:background "grey75" :foreground "black"))))
  '(mode-line-inactive ((t (:background "grey75" :foreground "black" :weight light)))))
@@ -252,8 +253,22 @@
  '(hi-lock-highlight-range 2000000)
  '(imenu-use-popup-menu nil)
  '(max-mini-window-height 0.45)
+ '(menu-bar-mode nil)
  '(mouse-wheel-progressive-speed nil)
  '(next-screen-context-lines 1)
- '(read-buffer-completion-ignore-case t))
+ '(read-buffer-completion-ignore-case t)
+ '(show-paren-mode t)
+ '(tool-bar-mode nil))
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
+
+
+(recentf-mode 1)
+(setq recentf-max-menu-items 100)
+(setq recentf-max-saved-items 100)
+(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+
+(setq auto-mode-alist
+  (mapcar (lambda (elt) (cons (purecopy (car elt)) (cdr elt))) `(
+    ("\\.h\\'" . c-mode)
+    ("\\.c\\'" . c-mode))))
