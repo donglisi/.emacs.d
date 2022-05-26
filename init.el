@@ -2,6 +2,7 @@
 (load "~/.emacs.d/27.2/simple.el")
 (load "~/.emacs.d/27.2/compile.el")
 (load "~/.emacs.d/27.2/cc-mode.el")
+(load "~/.emacs.d/27.2/hi-lock.el")
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
@@ -131,7 +132,7 @@
 (defun highlight-toggle ()
   (interactive)
   (let ((str (get-char-property (point) 'hi-lock-overlay-regexp)))
-      (if str (hi-lock-unface-buffer str) (hi-lock-face-symbol-at-point))))
+      (if str (hi-lock-unface-buffer str) (hi-lock-face-symbol-at-point2 (thing-at-point 'symbol)))))
 
 (defun mouse-highlight-toggle (click)
   (interactive "e")
@@ -268,7 +269,11 @@
 (setq recentf-max-saved-items 100)
 (global-set-key "\C-x\ \C-r" 'recentf-open-files)
 
-(setq auto-mode-alist
-  (mapcar (lambda (elt) (cons (purecopy (car elt)) (cdr elt))) `(
-    ("\\.h\\'" . c-mode)
-    ("\\.c\\'" . c-mode))))
+;; (setq auto-mode-alist
+;;  (mapcar (lambda (elt) (cons (purecopy (car elt)) (cdr elt))) `(
+;;    ("\\.h\\'" . c-mode)
+;;    ("\\.c\\'" . c-mode))))
+
+;; (setq interpreter-mode-alist
+;;  (mapcar (lambda (elt) (cons (purecopy (car elt)) (cdr elt))) `(
+;; )))
