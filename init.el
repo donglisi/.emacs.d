@@ -197,6 +197,7 @@
 (global-set-key (kbd "<f3>") 'search-selection)
 (global-set-key (kbd "<f4>") (lambda () (interactive) (switch-to-buffer nil)))
 (global-set-key (kbd "<f5>") (lambda () (interactive) (buffer-disable-undo) (buffer-enable-undo) (message "reset-undo")))
+(global-set-key (kbd "<f9>") 'highligt-selection)
 (global-set-key (kbd "<f10>") 'tmm-menubar)
 (global-set-key (kbd "<f11>") 'count-lines-page)
 (global-set-key (kbd "<f12>") 'kill-current-buffer)
@@ -277,3 +278,7 @@
 ;; (setq interpreter-mode-alist
 ;;  (mapcar (lambda (elt) (cons (purecopy (car elt)) (cdr elt))) `(
 ;; )))
+
+(defun highligt-selection (beg end)
+  (interactive "r")
+  (hi-lock-face-symbol-at-point2 (buffer-substring beg end)))
