@@ -34,6 +34,7 @@
 (setq next-error-highlight nil)
 (setq ggtags-highlight-tag nil)
 (setq scroll-step 1)
+(setq lazy-highlight-cleanup t)
 
 (setq-default mouse-1-click-follows-link nil)
 (setq-default enable-recursive-minibuffers t)
@@ -123,9 +124,10 @@
    (interactive)
    (kill-buffer (current-buffer)))
 
-(defun search-selection (beg end)
-  (interactive "r")
-  (kill-ring-save beg end)
+(defun search-selection ()
+  (interactive)
+  (region-active-p)
+  (kill-ring-save (region-beginning) (region-end))
   (isearch-mode t nil nil nil)
   (isearch-yank-pop))
 
@@ -141,6 +143,10 @@
       (hi-lock-face-symbol-at-point2 (buffer-substring (region-beginning) (region-end)))
       (deactivate-mark))
     (progn (mouse-set-point click) (highlight-toggle))))
+
+(defun highligt-selection (beg end)
+  (interactive "r")
+  (hi-lock-face-symbol-at-point2 (buffer-substring beg end)))
 
 (defun move-line-up ()
   (interactive)
@@ -200,6 +206,8 @@
 (global-set-key (kbd "<f3>") 'search-selection)
 (global-set-key (kbd "<f4>") (lambda () (interactive) (switch-to-buffer nil)))
 (global-set-key (kbd "<f5>") (lambda () (interactive) (buffer-disable-undo) (buffer-enable-undo) (message "reset-undo")))
+(global-set-key (kbd "<f6>") (lambda () (interactive) (message (kill-ring-save (region-beginning) (region-end)))))
+(global-set-key (kbd "<f9>") 'highligt-selection)
 (global-set-key (kbd "<f10>") 'tmm-menubar)
 (global-set-key (kbd "<f11>") 'count-lines-page)
 (global-set-key (kbd "<f12>") 'kill-current-buffer)
