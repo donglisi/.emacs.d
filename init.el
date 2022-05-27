@@ -134,10 +134,13 @@
   (let ((str (get-char-property (point) 'hi-lock-overlay-regexp)))
       (if str (hi-lock-unface-buffer str) (hi-lock-face-symbol-at-point2 (thing-at-point 'symbol)))))
 
-(defun mouse-highlight-toggle (click)
-  (interactive "e")
-  (mouse-set-point click)
-  (highlight-toggle))
+(defun mouse-highlight-toggle (beg end click)
+  (interactive "r\ne")
+  (if (use-region-p)
+    (progn
+      (hi-lock-face-symbol-at-point2 (buffer-substring beg end))
+      (deactivate-mark))
+    (progn (mouse-set-point click) (highlight-toggle))))
 
 (defun move-line-up ()
   (interactive)
@@ -197,7 +200,6 @@
 (global-set-key (kbd "<f3>") 'search-selection)
 (global-set-key (kbd "<f4>") (lambda () (interactive) (switch-to-buffer nil)))
 (global-set-key (kbd "<f5>") (lambda () (interactive) (buffer-disable-undo) (buffer-enable-undo) (message "reset-undo")))
-(global-set-key (kbd "<f9>") 'highligt-selection)
 (global-set-key (kbd "<f10>") 'tmm-menubar)
 (global-set-key (kbd "<f11>") 'count-lines-page)
 (global-set-key (kbd "<f12>") 'kill-current-buffer)
@@ -264,7 +266,6 @@
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
-
 (recentf-mode 1)
 (setq recentf-max-menu-items 100)
 (setq recentf-max-saved-items 100)
@@ -278,7 +279,3 @@
 ;; (setq interpreter-mode-alist
 ;;  (mapcar (lambda (elt) (cons (purecopy (car elt)) (cdr elt))) `(
 ;; )))
-
-(defun highligt-selection (beg end)
-  (interactive "r")
-  (hi-lock-face-symbol-at-point2 (buffer-substring beg end)))
