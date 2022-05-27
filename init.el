@@ -134,11 +134,11 @@
   (let ((str (get-char-property (point) 'hi-lock-overlay-regexp)))
       (if str (hi-lock-unface-buffer str) (hi-lock-face-symbol-at-point2 (thing-at-point 'symbol)))))
 
-(defun mouse-highlight-toggle (beg end click)
-  (interactive "r\ne")
-  (if (use-region-p)
+(defun mouse-highlight-toggle (click)
+  (interactive "e")
+  (if (region-active-p)
     (progn
-      (hi-lock-face-symbol-at-point2 (buffer-substring beg end))
+      (hi-lock-face-symbol-at-point2 (buffer-substring (region-beginning) (region-end)))
       (deactivate-mark))
     (progn (mouse-set-point click) (highlight-toggle))))
 
