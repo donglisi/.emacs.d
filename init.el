@@ -44,7 +44,7 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 (set-face-attribute 'region nil :background "#666" :foreground "#ffffff")
 (remove-hook 'xref-after-return-hook 'xref-pulse-momentarily)
-(setenv "MANWIDTH" "276")
+(setenv "MANWIDTH" "192")
 
 (defun kill-all-buffers () (interactive) (mapc 'kill-buffer (buffer-list)))
 
@@ -134,7 +134,7 @@
 (defun highlight-toggle ()
   (interactive)
   (let ((str (get-char-property (point) 'hi-lock-overlay-regexp)))
-      (if str (hi-lock-unface-buffer str) (hi-lock-face-symbol-at-point2 (thing-at-point 'symbol)))))
+      (if str (hi-lock-unface-buffer str) (hi-lock-face-symbol-at-point))))
 
 (defun mouse-highlight-toggle (click)
   (interactive "e")
@@ -196,7 +196,7 @@
 (defun translation-word ()
   (interactive)
   (let ((default-directory "~/"))
-    (message (shell-command-to-string (concat "transw " (thing-at-point 'word 'no-properties) " | head -20")))))
+    (message "%s" (shell-command-to-string (concat "transw " (thing-at-point 'word 'no-properties) " | head -20")))))
 
 (define-key isearch-mode-map (kbd "C-s") 'isearch-repeat-forward+)
 (define-key isearch-mode-map (kbd "C-r") 'isearch-repeat-backward+)
@@ -251,7 +251,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Liberation Mono" :foundry "1ASC" :slant normal :weight normal :height 181 :width normal))))
+ '(default ((t (:family "Liberation Mono" :foundry "1ASC" :slant normal :weight normal :height 128 :width normal))))
  '(line-number ((t (:foreground "black"))))
  '(mode-line ((t (:background "grey75" :foreground "black"))))
  '(mode-line-inactive ((t (:background "grey75" :foreground "black" :weight light)))))
@@ -279,11 +279,14 @@
 (setq recentf-max-saved-items 100)
 (global-set-key "\C-x\ \C-r" 'recentf-open-files)
 
-;; (setq auto-mode-alist
-;;  (mapcar (lambda (elt) (cons (purecopy (car elt)) (cdr elt))) `(
-;;    ("\\.h\\'" . c-mode)
-;;    ("\\.c\\'" . c-mode))))
-
-;; (setq interpreter-mode-alist
-;;  (mapcar (lambda (elt) (cons (purecopy (car elt)) (cdr elt))) `(
-;; )))
+(defun my-put-file-name-on-clipboard ()
+  "Put the current file name on the clipboard"
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      default-directory
+                    (buffer-file-name))))
+    (when filename
+      (with-temp-buffer
+        (insert filename)
+        (clipboard-kill-region (point-min) (point-max)))
+      (message filename))))
