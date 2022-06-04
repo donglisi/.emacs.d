@@ -120,6 +120,19 @@
   (interactive)
   (minibuffer-with-setup-hook 'minibuffer-complete (call-interactively 'switch-to-buffer)))
 
+(add-hook 'minibuffer-setup-hook
+  (lambda ()
+    (interactive)
+    (let ((window (get-buffer-window (window-buffer (minibuffer-selected-window)))))
+      (setq aabbc (window-point window))
+      (set-window-point window (window-start window)))))
+
+(add-hook 'minibuffer-exit-hook
+  (lambda ()
+    (interactive)
+    (let ((window (get-buffer-window (window-buffer (minibuffer-selected-window)))))
+      (set-window-point window (symbol-value 'aabbc)))))
+
 (defun kill-current-buffer ()
    (interactive)
    (kill-buffer (current-buffer)))
