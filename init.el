@@ -24,6 +24,7 @@
 (show-paren-mode)
 (delete-selection-mode)
 
+(setq message-origin-point-position nil)
 (setq inhibit-startup-screen t)
 (setq auto-save-list-file-prefix nil)
 (setq lazy-highlight-initial-delay 0)
@@ -131,8 +132,7 @@
   (lambda ()
     (interactive)
     (let ((window (get-buffer-window (window-buffer (minibuffer-selected-window)))))
-      (set-window-point window (symbol-value 'origin-point-position)))
-    (setq origin-point-position nil)))
+      (set-window-point window (symbol-value 'origin-point-position)))))
 
 (defun kill-current-buffer ()
    (interactive)
@@ -210,18 +210,18 @@
 (defun translation-word ()
   (interactive)
   (let ((str (shell-command-to-string (concat "transw " (thing-at-point 'word 'no-properties) " | head -20"))))
-    (setq origin-point-position (window-point))
+    (setq message-origin-point-position (window-point))
     (goto-char (window-start))
     (message "%s" str)))
 
 (defun keyboard-escape-quit2 ()
   (interactive)
-  (if origin-point-position (progn (goto-char origin-point-position) (setq origin-point-position nil)))
+  (if message-origin-point-position (progn (goto-char message-origin-point-position) (setq message-origin-point-position nil)))
   (keyboard-escape-quit))
 
 (defun keyboard-quit2 ()
   (interactive)
-  (if origin-point-position (progn (goto-char origin-point-position) (setq origin-point-position nil)))
+  (if message-origin-point-position (progn (goto-char message-origin-point-position) (setq message-origin-point-position nil)))
   (keyboard-quit))
 
 (define-key isearch-mode-map (kbd "C-s") 'isearch-repeat-forward+)
