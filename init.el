@@ -124,14 +124,15 @@
   (lambda ()
     (interactive)
     (let ((window (get-buffer-window (window-buffer (minibuffer-selected-window)))))
-      (setq aabbc (window-point window))
+      (setq origin-point-position (window-point window))
       (set-window-point window (window-start window)))))
 
 (add-hook 'minibuffer-exit-hook
   (lambda ()
     (interactive)
     (let ((window (get-buffer-window (window-buffer (minibuffer-selected-window)))))
-      (set-window-point window (symbol-value 'aabbc)))))
+      (set-window-point window (symbol-value 'origin-point-position)))
+    (setq origin-point-position nil)))
 
 (defun kill-current-buffer ()
    (interactive)
@@ -208,13 +209,25 @@
 
 (defun translation-word ()
   (interactive)
-  (let ((default-directory "~/"))
-    (message "%s" (shell-command-to-string (concat "transw " (thing-at-point 'word 'no-properties) " | head -20")))))
+  (let ((str (shell-command-to-string (concat "transw " (thing-at-point 'word 'no-properties) " | head -20"))))
+    (setq origin-point-position (window-point))
+    (goto-char (window-start))
+    (message "%s" str)))
+
+(defun keyboard-escape-quit2 ()
+  (interactive)
+  (if origin-point-position (progn (goto-char origin-point-position) (setq origin-point-position nil)))
+  (keyboard-escape-quit))
+
+(defun keyboard-quit2 ()
+  (interactive)
+  (if origin-point-position (progn (goto-char origin-point-position) (setq origin-point-position nil)))
+  (keyboard-quit))
 
 (define-key isearch-mode-map (kbd "C-s") 'isearch-repeat-forward+)
 (define-key isearch-mode-map (kbd "C-r") 'isearch-repeat-backward+)
 
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit2)
 (global-set-key (kbd "C-x M-f") 'find-file-root)
 (global-set-key (kbd "<f3>") 'search-selection)
 (global-set-key (kbd "<f4>") (lambda () (interactive) (switch-to-buffer nil)))
@@ -229,6 +242,7 @@
 (global-set-key (kbd "C-\\") 'goto-last-change)
 (global-set-key (kbd "C-x f") 'find-file-home)
 (global-set-key (kbd "C-x C-t") 'fzfk)
+(global-set-key (kbd "C-g") 'keyboard-quit2)
 (global-set-key (kbd "C-x C-f") 'find-file-dir)
 (global-set-key (kbd "C-x k") 'kill-current-buffer)
 (global-set-key (kbd "C-x C-k") 'kill-all-buffers)
