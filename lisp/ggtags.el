@@ -887,7 +887,7 @@ blocking emacs."
                             (`reference "--reference")
                             (`symbol "--symbol")
                             (`path "--path")
-                            (`grep "--grep")
+;;                            (`grep "--grep")
                             (`idutils "--idutils")))
                     args)))
     (mapconcat #'identity (delq nil xs) " ")))
