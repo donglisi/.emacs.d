@@ -887,7 +887,7 @@ blocking emacs."
                             (`reference "--reference")
                             (`symbol "--symbol")
                             (`path "--path")
-;;                            (`grep "--grep")
+                            (`grep "--grep")
                             (`idutils "--idutils")))
                     args)))
     (mapconcat #'identity (delq nil xs) " ")))
@@ -2047,6 +2047,7 @@ When finished invoke CALLBACK in BUFFER with process exit status."
     (define-key m "\M-f" 'ggtags-find-file)
     (define-key m "\M-o" 'ggtags-find-other-symbol)
     (define-key m "\M-g" 'ggtags-grep)
+    (define-key m "\M-t" 'ggtags-grep2)
     (define-key m "\M-i" 'ggtags-idutils-query)
     (define-key m "\M-b" 'ggtags-browse-file-as-hypertext)
     (define-key m "\M-k" 'ggtags-kill-file-buffers)
@@ -2337,6 +2338,46 @@ Function `ggtags-eldoc-function' disabled for eldoc in current buffer: %S" err))
   (interactive "P")
   (unload-feature 'ggtags force)
   (require 'ggtags))
+
+(defun ggtags-global-build-command2 (cmd &rest args)
+  ;; CMD can be definition, reference, symbol, grep, idutils
+  (let ((xs (append (list (shell-quote-argument (ggtags-program-path "global"))
+                          "-v"
+                          (format "--result=%s" ggtags-global-output-format)
+                          (and ggtags-global-ignore-case "--ignore-case")
+                          (and ggtags-global-use-color
+                               (ggtags-find-project)
+                               (ggtags-project-has-color (ggtags-find-project))
+                               "--color=always")
+                          (and (ggtags-sort-by-nearness-p) "--nearness=.")
+                          (and (ggtags-find-project)
+                               (ggtags-project-has-path-style (ggtags-find-project))
+                               "--path-style=shorter")
+                          (and ggtags-global-treat-text "--other")
+                          (pcase cmd
+                            ((pred stringp) cmd)
+                            (`definition nil) ;-d not supported by Global 5.7.1
+                            (`reference "--reference")
+                            (`symbol "--symbol")
+                            (`path "--path")
+;;                            (`grep "--grep")
+                            (`idutils "--idutils")))
+                    args)))
+    (mapconcat #'identity (delq nil xs) " ")))
+
+(defun ggtags-find-tag2 (cmd &rest args)
+  (ggtags-check-project)
+  (ggtags-global-start (apply #'ggtags-global-build-command2 cmd args)))
+
+(defun ggtags-grep2 (pattern &optional invert-match)
+  "Grep for lines matching PATTERN.
+Invert the match when called with a prefix arg \\[universal-argument]."
+  (interactive (list (ggtags-read-tag 'definition 'confirm
+                                      (if current-prefix-arg
+                                          "Inverted grep pattern" "Grep pattern"))
+                     current-prefix-arg))
+  (ggtags-find-tag2 'grep (and invert-match "--invert-match")
+                   "--" (ggtags-quote-pattern pattern)))
 
 (provide 'ggtags)
 ;;; ggtags.el ends here

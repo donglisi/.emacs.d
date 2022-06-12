@@ -148,7 +148,7 @@
 (defun highlight-toggle ()
   (interactive)
   (let ((str (get-char-property (point) 'hi-lock-overlay-regexp)))
-      (if str (hi-lock-unface-buffer str) (hi-lock-face-symbol-at-point2 (thing-at-point 'symbol)))))
+      (if str (hi-lock-unface-buffer str) (hi-lock-face-symbol-at-point))))
 
 (defun mouse-highlight-toggle (click)
   (interactive "e")
