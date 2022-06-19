@@ -139,5 +139,6 @@ invocations in a sequence of invocations."
                              (eq last-command t)))
                     minimal-line-distance))
 
+(global-set-key (kbd "C-\\") 'goto-last-change)
 (provide 'goto-last-change)
 ;;; goto-last-change.el ends here
