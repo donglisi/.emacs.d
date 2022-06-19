@@ -162,16 +162,25 @@
   (interactive "r")
   (hi-lock-face-symbol-at-point2 (buffer-substring beg end)))
 
+(defmacro save-column (&rest body)
+  `(let ((column (current-column)))
+     (unwind-protect
+         (progn ,@body)
+       (move-to-column column))))
+(put 'save-column 'lisp-indent-function 0)
+
 (defun move-line-up ()
   (interactive)
-  (transpose-lines 1)
-  (forward-line -2))
+  (save-column
+    (transpose-lines 1)
+    (forward-line -2)))
 
 (defun move-line-down ()
   (interactive)
-  (forward-line 1)
-  (transpose-lines 1)
-  (forward-line -1))
+  (save-column
+    (forward-line 1)
+    (transpose-lines 1)
+    (forward-line -1)))
 
 (defun kill-other-buffers ()
   (interactive)
