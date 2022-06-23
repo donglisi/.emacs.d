@@ -125,11 +125,11 @@
     (minibuffer-with-setup-hook 'find-file-set-key (call-interactively 'find-file))))
 (global-set-key (kbd "C-x M-f") 'find-file-root)
 
-(defun find-file-dir ()
+(defun find-file-current ()
   (interactive)
   (let ((inhibit-message t))
     (minibuffer-with-setup-hook 'find-file-set-key (call-interactively 'find-file))))
-(global-set-key (kbd "C-x C-f") 'find-file-dir)
+(global-set-key (kbd "C-x C-f") 'find-file-current)
 
 (defun find-file-home ()
   (interactive)
@@ -156,6 +156,7 @@
   (isearch-repeat-forward)
   (unless isearch-success
     (isearch-repeat-forward)))
+(define-key isearch-mode-map (kbd "C-s") 'isearch-repeat-forward+)
 
 (defun isearch-repeat-backward+ ()
   (interactive)
@@ -164,8 +165,6 @@
   (isearch-repeat-backward)
   (unless isearch-success
     (isearch-repeat-backward)))
-
-(define-key isearch-mode-map (kbd "C-s") 'isearch-repeat-forward+)
 (define-key isearch-mode-map (kbd "C-r") 'isearch-repeat-backward+)
 
 (defun search-selection ()
@@ -208,7 +207,7 @@
   (save-column
     (transpose-lines 1)
     (forward-line -2)))
-(global-set-key (kbd "M-p") 'move-line-up)
+;; (global-set-key (kbd "M-p") 'move-line-up)
 
 (defun move-line-down ()
   (interactive)
@@ -216,7 +215,7 @@
     (forward-line 1)
     (transpose-lines 1)
     (forward-line -1)))
-(global-set-key (kbd "M-n") 'move-line-down)
+;; (global-set-key (kbd "M-n") 'move-line-down)
 
 (defun kill-current-buffer ()
    (interactive)
@@ -255,9 +254,17 @@
       (insert "printk(\"\\n\");")
       (backward-char 5))
     (global-set-key (kbd "C-c M-k") 'insert-printk)
-        (local-set-key (kbd "<double-down-mouse-1>") (lambda ()(interactive)))
 
+    (defun insert-main ()
+      (interactive)
+      (insert "#include <stdio.h>\n\nint main(int argc, char *argv[])\n{\n\tprintf(\"\\n\");\n\treturn 0;\n}")
+      (backward-char 18))
+    (global-set-key (kbd "C-c M-m") 'insert-main)
+
+    (local-set-key (kbd "<double-down-mouse-1>") (lambda ()(interactive)))
     (local-set-key (kbd "<double-mouse-1>") 'ggtags-find-tag-dwim)
+    (local-set-key (kbd "M-n") 'next-error)
+    (local-set-key (kbd "M-p") 'previous-error)
     (local-set-key (kbd "<mouse-2>") 'xref-pop-marker-stack)
     (local-set-key (kbd "<mouse-8>") 'next-error)
     (local-set-key (kbd "<mouse-9>") 'previous-error)
@@ -273,13 +280,21 @@
 (global-set-key (kbd "<f11>") 'translation-word)
 (global-set-key (kbd "C-c w") 'translation-word)
 
-(defun my-put-file-name-on-clipboard ()
+(defun my-put-file-path-on-clipboard ()
   (interactive)
   (let ((filename (if (equal major-mode 'dired-mode) default-directory (buffer-file-name))))
     (when filename
       (with-temp-buffer (insert filename) (clipboard-kill-region (point-min) (point-max)))
       (message filename))))
-(global-set-key (kbd "<f6>") 'my-put-file-name-on-clipboard)
+(global-set-key (kbd "<f6>") 'my-put-file-path-on-clipboard)
+
+(defun my-put-file-name-on-clipboard ()
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode) default-directory (buffer-name))))
+    (when filename
+      (with-temp-buffer (insert filename) (clipboard-kill-region (point-min) (point-max)))
+      (message filename))))
+(global-set-key (kbd "<f7>") 'my-put-file-name-on-clipboard)
 
 (global-set-key (kbd "<f4>") (lambda () (interactive) (switch-to-buffer nil)))
 (global-set-key (kbd "<f5>") (lambda () (interactive) (buffer-disable-undo) (buffer-enable-undo) (message "reset-undo")))
