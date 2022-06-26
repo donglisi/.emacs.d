@@ -42,6 +42,7 @@
 (setq-default enable-recursive-minibuffers t)
 (setq-default mode-line-format (list '(:eval (if (buffer-file-name) "%f" "%b")) " (%l %C)"))
 
+(add-to-list 'auto-mode-alist '("\\.S\\'" . c-mode))
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 (defalias 'yes-or-no-p 'y-or-n-p)
 (set-face-attribute 'region nil :background "#666" :foreground "#ffffff")
@@ -241,7 +242,7 @@
     (local-set-key (kbd "<mouse-1>") 'choose-completion)
     (local-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)))
 
-(add-hook 'c-mode-common-hook
+(add-hook 'c-mode-hook
   (lambda ()
     (defun insert-printf ()
       (interactive)
@@ -269,7 +270,7 @@
     (local-set-key (kbd "<mouse-8>") 'next-error)
     (local-set-key (kbd "<mouse-9>") 'previous-error)
     (global-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
-    (when (derived-mode-p 'c-mode 'asm-mode) (ggtags-mode))))
+    (ggtags-mode)))
 
 (defun translation-word ()
   (interactive)
