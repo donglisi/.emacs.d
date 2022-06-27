@@ -274,7 +274,8 @@
 
 (defun translation-word ()
   (interactive)
-  (let ((str (shell-command-to-string (concat "transw " (thing-at-point 'word 'no-properties) " | head -40"))))
+  (let* ((default-directory "~/")
+        (str (shell-command-to-string (concat "transw " (thing-at-point 'word 'no-properties) " | head -40"))))
     (setq message-origin-point-position (window-point))
     (goto-char (window-start))
     (message "%s" str)))
