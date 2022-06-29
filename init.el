@@ -4,6 +4,7 @@
 (load "~/.emacs.d/27.2/compile.el")
 (load "~/.emacs.d/27.2/cc-mode.el")
 (load "~/.emacs.d/27.2/hi-lock.el")
+(load "~/.emacs.d/27.2/tramp-sh.el")
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
@@ -208,7 +209,7 @@
   (save-column
     (transpose-lines 1)
     (forward-line -2)))
-;; (global-set-key (kbd "M-p") 'move-line-up)
+(global-set-key (kbd "M-k") 'move-line-up)
 
 (defun move-line-down ()
   (interactive)
@@ -216,7 +217,7 @@
     (forward-line 1)
     (transpose-lines 1)
     (forward-line -1)))
-;; (global-set-key (kbd "M-n") 'move-line-down)
+(global-set-key (kbd "M-j") 'move-line-down)
 
 (defun kill-current-buffer ()
    (interactive)
