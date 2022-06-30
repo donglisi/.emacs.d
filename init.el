@@ -44,6 +44,7 @@
 (setq-default mode-line-format (list '(:eval (if (buffer-file-name) "%f" "%b")) " (%l %C)"))
 
 (add-to-list 'auto-mode-alist '("\\.S\\'" . c-mode))
+(add-to-list 'auto-mode-alist '("\\Makefile\\'" . fundamental-mode))
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 (defalias 'yes-or-no-p 'y-or-n-p)
 (set-face-attribute 'region nil :background "#666" :foreground "#ffffff")
@@ -209,7 +210,7 @@
   (save-column
     (transpose-lines 1)
     (forward-line -2)))
-(global-set-key (kbd "M-k") 'move-line-up)
+(global-set-key (kbd "M-p") 'move-line-up)
 
 (defun move-line-down ()
   (interactive)
@@ -217,7 +218,7 @@
     (forward-line 1)
     (transpose-lines 1)
     (forward-line -1)))
-(global-set-key (kbd "M-j") 'move-line-down)
+(global-set-key (kbd "M-n") 'move-line-down)
 
 (defun kill-current-buffer ()
    (interactive)
@@ -265,8 +266,8 @@
 
     (local-set-key (kbd "<double-down-mouse-1>") (lambda ()(interactive)))
     (local-set-key (kbd "<double-mouse-1>") 'ggtags-find-tag-dwim)
-    (local-set-key (kbd "M-n") 'next-error)
-    (local-set-key (kbd "M-p") 'previous-error)
+    (local-set-key (kbd "M-m") 'next-error)
+    (local-set-key (kbd "M-o") 'previous-error)
     (local-set-key (kbd "<mouse-2>") 'xref-pop-marker-stack)
     (local-set-key (kbd "<mouse-8>") 'next-error)
     (local-set-key (kbd "<mouse-9>") 'previous-error)
