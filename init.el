@@ -88,15 +88,17 @@
 (add-hook 'minibuffer-setup-hook
   (lambda ()
     (interactive)
-    (let ((window (get-buffer-window (window-buffer (minibuffer-selected-window)))))
-      (setq origin-point-position (window-point window))
-      (set-window-point window (window-start window)))))
+    (if (get-buffer-window "*Completions*")
+      (let ((window (get-buffer-window (window-buffer (minibuffer-selected-window)))))
+        (setq origin-point-position (window-point window))
+        (set-window-point window (window-start window))))))
 
 (add-hook 'minibuffer-exit-hook
   (lambda ()
     (interactive)
-    (let ((window (get-buffer-window (window-buffer (minibuffer-selected-window)))))
-      (set-window-point window (symbol-value 'origin-point-position)))))
+    (if (get-buffer-window "*Completions*")
+      (let ((window (get-buffer-window (window-buffer (minibuffer-selected-window)))))
+        (set-window-point window (symbol-value 'origin-point-position))))))
 
 (defun keyboard-escape-quit2 ()
   (interactive)
