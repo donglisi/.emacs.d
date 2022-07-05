@@ -27,6 +27,7 @@
 (save-place-mode)
 (delete-selection-mode)
 
+(setq minibuffer-origin-path nil)
 (setq message-origin-point-position nil)
 (setq inhibit-startup-screen t)
 (setq auto-save-list-file-prefix nil)
@@ -36,7 +37,7 @@
 (setq mouse-drag-copy-region t)
 (setq read-file-name-completion-ignore-case t)
 (setq next-error-highlight nil)
-(setq minibuffer-message-timeout nil)
+(setq minibuffer-message-timeout 0.5)
 (setq ggtags-highlight-tag nil)
 (setq scroll-step 1)
 (setq lazy-highlight-cleanup t)
@@ -117,8 +118,15 @@
 (defun minibuffer-path-up ()
   (interactive)
   (let ((path (minibuffer-contents)))
+    (setq minibuffer-origin-path path)
     (delete-minibuffer-contents)
     (insert (replace-regexp-in-string "/[^/]*/?$" "/" path)))
+  (minibuffer-completion-help))
+
+(defun minibuffer-path-origin ()
+  (interactive)
+  (delete-minibuffer-contents)
+  (insert minibuffer-origin-path)
   (minibuffer-completion-help))
 
 (defun find-file-set-key ()
@@ -254,7 +262,8 @@
   (lambda ()
     (local-set-key (kbd "<mouse-1>") (lambda () (interactive (progn (choose-completion) (execute-kbd-tab)))))
     (local-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)
-    (local-set-key (kbd "<mouse-6>") 'minibuffer-path-up)))
+    (local-set-key (kbd "<mouse-6>") 'minibuffer-path-up)
+    (local-set-key (kbd "<mouse-7>") 'minibuffer-path-origin)))
 
 (add-hook 'c-mode-hook
   (lambda ()
