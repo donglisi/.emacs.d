@@ -24,6 +24,7 @@
 (global-anzu-mode)
 (blink-cursor-mode 0)
 (show-paren-mode)
+(save-place-mode)
 (delete-selection-mode)
 
 (setq message-origin-point-position nil)
@@ -135,6 +136,7 @@
   (let ((inhibit-message t))
     (minibuffer-with-setup-hook 'find-file-set-key (call-interactively 'find-file))))
 (global-set-key (kbd "C-x C-f") 'find-file-current)
+(global-set-key (kbd "<mouse-6>") 'find-file-current)
 
 (defun find-file-home ()
   (interactive)
@@ -152,7 +154,6 @@
   (interactive)
   (minibuffer-with-setup-hook 'minibuffer-complete (call-interactively 'switch-to-buffer)))
 (global-set-key (kbd "C-x b") 'switch-buffer-completion)
-(global-set-key (kbd "<mouse-6>") 'switch-buffer-completion)
 
 (defun isearch-repeat-forward+ ()
   (interactive)
@@ -239,11 +240,14 @@
 (add-hook 'ggtags-global-mode-hook
   (lambda ()
     (local-set-key (kbd "<mouse-1>") 'compile-goto-error)
+    (local-set-key (kbd "<mouse-9>") 'previous-error)
+    (local-set-key (kbd "<mouse-8>") 'next-error)
     (local-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)))
 
+(defun execute-kbd-tab () (interactive) (execute-kbd-macro (kbd "TAB")))
 (add-hook 'completion-list-mode-hook
   (lambda ()
-    (local-set-key (kbd "<mouse-1>") 'choose-completion)
+    (local-set-key (kbd "<mouse-1>") (lambda () (interactive (progn (choose-completion) (execute-kbd-tab)))))
     (local-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)))
 
 (add-hook 'c-mode-hook
@@ -345,4 +349,5 @@
  '(next-screen-context-lines 1)
  '(read-buffer-completion-ignore-case t)
  '(show-paren-mode t)
- '(tool-bar-mode nil))
+ '(tool-bar-mode nil)
+ '(use-dialog-box nil))
