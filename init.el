@@ -36,6 +36,7 @@
 (setq mouse-drag-copy-region t)
 (setq read-file-name-completion-ignore-case t)
 (setq next-error-highlight nil)
+(setq minibuffer-message-timeout nil)
 (setq ggtags-highlight-tag nil)
 (setq scroll-step 1)
 (setq lazy-highlight-cleanup t)
