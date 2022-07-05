@@ -113,15 +113,18 @@
   (keyboard-quit))
 (global-set-key (kbd "C-g") 'keyboard-quit2)
 
+(defun minibuffer-path-up ()
+  (interactive)
+  (let ((path (minibuffer-contents)))
+    (delete-minibuffer-contents)
+    (insert (replace-regexp-in-string "/[^/]*/?$" "/" path)))
+  (minibuffer-completion-help))
+
 (defun find-file-set-key ()
   (interactive)
   (local-set-key (kbd "TAB") (lambda () (interactive (progn (minibuffer-complete) (minibuffer-completion-help)))))
   (local-set-key (kbd "M-DEL") (lambda () (interactive) (backward-kill-word 1) (minibuffer-completion-help)))
-  (local-set-key (kbd "M-\\") (lambda () (interactive)
-    (let ((path (minibuffer-contents)))
-      (delete-minibuffer-contents)
-      (insert (replace-regexp-in-string "/[^/]*/?$" "/" path)))
-    (minibuffer-completion-help)))
+  (local-set-key (kbd "M-\\") 'minibuffer-path-up)
   (local-set-key (kbd "/") (lambda () (interactive) (insert "/") (minibuffer-completion-help)))
   (minibuffer-completion-help))
 
@@ -245,10 +248,12 @@
     (local-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)))
 
 (defun execute-kbd-tab () (interactive) (execute-kbd-macro (kbd "TAB")))
+
 (add-hook 'completion-list-mode-hook
   (lambda ()
     (local-set-key (kbd "<mouse-1>") (lambda () (interactive (progn (choose-completion) (execute-kbd-tab)))))
-    (local-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)))
+    (local-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)
+    (local-set-key (kbd "<mouse-6>") 'minibuffer-path-up)))
 
 (add-hook 'c-mode-hook
   (lambda ()
