@@ -256,9 +256,9 @@
 (add-hook 'ggtags-global-mode-hook
   (lambda ()
     (local-set-key (kbd "<mouse-1>") 'compile-goto-error)
-    (local-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)))
+    (local-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)
     (local-set-key (kbd "<mouse-8>") 'next-error)
-    (local-set-key (kbd "<mouse-9>") 'previous-error)
+    (local-set-key (kbd "<mouse-9>") 'previous-error)))
 
 (defun execute-kbd-tab () (interactive) (execute-kbd-macro (kbd "TAB")))
 
