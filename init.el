@@ -44,7 +44,7 @@
 
 (setq-default mouse-1-click-follows-link nil)
 (setq-default enable-recursive-minibuffers t)
-(setq-default mode-line-format (list '(:eval (if (buffer-file-name) "%f" "%b")) " (%l %C)"))
+(setq-default mode-line-format (list '(:eval (if (buffer-file-name) "%f" "%b")) " (%p %l %C)"))
 
 (add-to-list 'auto-mode-alist '("\\.S\\'" . c-mode))
 (add-to-list 'auto-mode-alist '("\\Makefile\\'" . fundamental-mode))
@@ -256,9 +256,9 @@
 (add-hook 'ggtags-global-mode-hook
   (lambda ()
     (local-set-key (kbd "<mouse-1>") 'compile-goto-error)
+    (local-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)))
     (local-set-key (kbd "<mouse-8>") 'next-error)
     (local-set-key (kbd "<mouse-9>") 'previous-error)
-    (local-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)))
 
 (defun execute-kbd-tab () (interactive) (execute-kbd-macro (kbd "TAB")))
 
@@ -305,7 +305,6 @@
     (setq message-origin-point-position (window-point))
     (goto-char (window-start))
     (message "%s" str)))
-(global-set-key (kbd "<f11>") 'translation-word)
 (global-set-key (kbd "C-c w") 'translation-word)
 
 (defun my-put-file-path-on-clipboard ()
@@ -323,6 +322,14 @@
       (with-temp-buffer (insert filename) (clipboard-kill-region (point-min) (point-max)))
       (message filename))))
 (global-set-key (kbd "<f7>") 'my-put-file-name-on-clipboard)
+
+(setq ggtags-global-restart-flag nil)
+(defun ggtags-global-restart ()
+  (interactive)
+  (if (get-buffer "*ggtags-global*") (setq ggtags-global-restart-flag t))
+    (ggtags-global-start ggtags-global-start-command))
+
+(global-set-key (kbd "<f11>") 'ggtags-global-restart)
 
 (global-set-key (kbd "<f2>") 'count-lines-page)
 (global-set-key (kbd "<f4>") (lambda () (interactive) (switch-to-buffer nil)))

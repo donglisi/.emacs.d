@@ -910,6 +910,7 @@ blocking emacs."
     (setq ggtags-global-start-marker t)))
 
 (defun ggtags-global-start (command &optional directory)
+  (setq ggtags-global-start-command command)
   (let* ((default-directory (or directory (ggtags-current-project-root)))
          (split-window-preferred-function ggtags-split-window-function)
          (env ggtags-process-environment))
@@ -1647,7 +1648,9 @@ ggtags: history match invalid, jump to first match instead")
         (`nil )
         (timer (timer-event-handler timer)))
       (ggtags-navigation-mode -1)
-      (ggtags-navigation-mode-cleanup buf t)))))
+      (ggtags-navigation-mode-cleanup buf t))))
+  (if ggtags-global-restart-flag (ring-remove xref--marker-ring 0))
+  (setq ggtags-global-restart-flag nil))
 
 (defvar ggtags-global-mode-font-lock-keywords
   '(("^Global \\(exited abnormally\\|interrupt\\|killed\\|terminated\\)\\(?:.*with code \\([0-9]+\\)\\)?.*"
