@@ -148,7 +148,8 @@
   (let ((inhibit-message t))
     (minibuffer-with-setup-hook 'find-file-set-key (call-interactively 'find-file))))
 (global-set-key (kbd "C-x C-f") 'find-file-current)
-(global-set-key (kbd "<mouse-6>") 'find-file-current)
+(global-set-key (kbd "<mouse-6>") (lambda () (interactive)
+  (if (get-buffer-window "*Completions*") (minibuffer-path-up) (find-file-current))))
 
 (defun find-file-home ()
   (interactive)
@@ -160,7 +161,8 @@
   (interactive)
   (minibuffer-with-setup-hook 'minibuffer-complete (call-interactively 'imenu)))
 (global-set-key (kbd "M-i") 'imenu-completion)
-(global-set-key (kbd "<mouse-7>") 'imenu-completion)
+(global-set-key (kbd "<mouse-7>") (lambda () (interactive)
+  (if (get-buffer-window "*Completions*") (minibuffer-path-origin) (imenu-completion))))
 
 (defun switch-buffer-completion ()
   (interactive)
@@ -254,8 +256,8 @@
 (add-hook 'ggtags-global-mode-hook
   (lambda ()
     (local-set-key (kbd "<mouse-1>") 'compile-goto-error)
-    (local-set-key (kbd "<mouse-9>") 'previous-error)
     (local-set-key (kbd "<mouse-8>") 'next-error)
+    (local-set-key (kbd "<mouse-9>") 'previous-error)
     (local-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)))
 
 (defun execute-kbd-tab () (interactive) (execute-kbd-macro (kbd "TAB")))
@@ -263,9 +265,7 @@
 (add-hook 'completion-list-mode-hook
   (lambda ()
     (local-set-key (kbd "<mouse-1>") (lambda () (interactive (progn (choose-completion) (execute-kbd-tab)))))
-    (local-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)
-    (local-set-key (kbd "<mouse-6>") 'minibuffer-path-up)
-    (local-set-key (kbd "<mouse-7>") 'minibuffer-path-origin)))
+    (local-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)))
 
 (add-hook 'c-mode-hook
   (lambda ()
@@ -291,7 +291,8 @@
     (local-set-key (kbd "<double-mouse-1>") 'ggtags-find-tag-dwim)
     (local-set-key (kbd "M-n") (lambda () (interactive) (if (get-buffer-window "*ggtags-global*") (next-error) (move-line-down))))
     (local-set-key (kbd "M-p") (lambda () (interactive) (if (get-buffer-window "*ggtags-global*") (previous-error) (move-line-up))))
-    (local-set-key (kbd "<mouse-2>") 'xref-pop-marker-stack)
+    (local-set-key (kbd "<mouse-2>") (lambda () (interactive)
+      (if (get-buffer-window "*Completions*") (keyboard-escape-quit) (xref-pop-marker-stack))))
     (local-set-key (kbd "<mouse-8>") 'next-error)
     (local-set-key (kbd "<mouse-9>") 'previous-error)
     (global-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
@@ -323,6 +324,7 @@
       (message filename))))
 (global-set-key (kbd "<f7>") 'my-put-file-name-on-clipboard)
 
+(global-set-key (kbd "<f2>") 'count-lines-page)
 (global-set-key (kbd "<f4>") (lambda () (interactive) (switch-to-buffer nil)))
 (global-set-key (kbd "<f5>") (lambda () (interactive) (buffer-disable-undo) (buffer-enable-undo) (message "reset-undo")))
 (global-set-key (kbd "<f8>") 'save-buffer)
