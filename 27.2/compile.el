@@ -1974,7 +1974,7 @@ Returns the compilation buffer created."
 (defvar compilation-minor-mode-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map special-mode-map)
-    (define-key map [mouse-2] 'compile-goto-error)
+;;    (define-key map [mouse-2] 'compile-goto-error)
     (define-key map [follow-link] 'mouse-face)
     (define-key map "\C-c\C-c" 'compile-goto-error)
     (define-key map "\C-m" 'compile-goto-error)
@@ -2006,7 +2006,7 @@ Returns the compilation buffer created."
 
 (defvar compilation-button-map
   (let ((map (make-sparse-keymap)))
-    (define-key map [mouse-2] 'compile-goto-error)
+;;    (define-key map [mouse-2] 'compile-goto-error)
     (define-key map [follow-link] 'mouse-face)
     (define-key map "\C-m" 'compile-goto-error)
     map)
@@ -2019,7 +2019,7 @@ Returns the compilation buffer created."
     ;; because that introduces a menu bar item we don't want.
     ;; That confuses C-down-mouse-3.
     (set-keymap-parent map special-mode-map)
-    (define-key map [mouse-2] 'compile-goto-error)
+;;    (define-key map [mouse-2] 'compile-goto-error)
     (define-key map [follow-link] 'mouse-face)
     (define-key map "\C-c\C-c" 'compile-goto-error)
     (define-key map "\C-m" 'compile-goto-error)
