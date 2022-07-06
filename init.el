@@ -243,7 +243,6 @@
    (interactive)
    (kill-buffer (current-buffer)))
 (global-set-key (kbd "C-x k") 'kill-current-buffer)
-(global-set-key (kbd "<f12>") 'kill-current-buffer)
 
 (defun kill-all-buffers () (interactive) (mapc 'kill-buffer (buffer-list)))
 (global-set-key (kbd "C-x C-k") 'kill-all-buffers)
@@ -292,7 +291,7 @@
     (local-set-key (kbd "M-n") (lambda () (interactive) (if (get-buffer-window "*ggtags-global*") (next-error) (move-line-down))))
     (local-set-key (kbd "M-p") (lambda () (interactive) (if (get-buffer-window "*ggtags-global*") (previous-error) (move-line-up))))
     (local-set-key (kbd "<mouse-2>") (lambda () (interactive)
-      (if (get-buffer-window "*Completions*") (keyboard-escape-quit) (xref-pop-marker-stack))))
+      (if (get-buffer-window "*Completions*") (keyboard-escape-quit) (ggtags-navigation-mode-abort))))
     (local-set-key (kbd "<mouse-8>") 'next-error)
     (local-set-key (kbd "<mouse-9>") 'previous-error)
     (global-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
@@ -328,8 +327,7 @@
   (interactive)
   (if (get-buffer "*ggtags-global*") (setq ggtags-global-restart-flag t))
     (ggtags-global-start ggtags-global-start-command))
-
-(global-set-key (kbd "<f11>") 'ggtags-global-restart)
+(global-set-key (kbd "<f12>") 'ggtags-global-restart)
 
 (global-set-key (kbd "<f2>") 'count-lines-page)
 (global-set-key (kbd "<f4>") (lambda () (interactive) (switch-to-buffer nil)))
