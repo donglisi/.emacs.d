@@ -226,6 +226,7 @@
     (transpose-lines 1)
     (forward-line -2)))
 (global-set-key (kbd "M-p") 'move-line-up)
+(global-set-key [M-up] 'move-line-up)
 
 (defun move-line-down ()
   (interactive)
@@ -234,6 +235,7 @@
     (transpose-lines 1)
     (forward-line -1)))
 (global-set-key (kbd "M-n") 'move-line-down)
+(global-set-key [M-down] 'move-line-down)
 
 (defun kill-current-buffer ()
    (interactive)
@@ -336,8 +338,10 @@
 (global-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)
 (global-set-key "\S-\M-p" "\C-u1\C-v")
 (global-set-key "\S-\M-n" "\C-u1\M-v")
-(global-set-key (kbd "<prior>") (lambda () (interactive) (scroll-down-command 11)))
-(global-set-key (kbd "<next>") (lambda () (interactive) (scroll-up-command 11)))
+(global-set-key (kbd "<prior>") 'scroll-down-command)
+(global-set-key (kbd "<next>") 'scroll-up-command)
+(global-set-key (kbd "C-v") (lambda () (interactive) (scroll-up-command 22)))
+(global-set-key (kbd "M-v") (lambda () (interactive) (scroll-down-command 22)))
 
 (customize-set-variable 'search-whitespace-regexp nil)
 (custom-set-faces
