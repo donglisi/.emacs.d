@@ -335,7 +335,10 @@
     (progn
       (setq ggtags-global-show-flag t)
       (if (car ggtags-global-start-commands) (ggtags-global-start (car ggtags-global-start-commands))))
-    (if ggtags-global-start-command (ggtags-global-start ggtags-global-start-command))))
+    (if (and ggtags-global-start-command
+          (not (eq ggtags-global-start-command (car ggtags-global-start-commands))))
+      (ggtags-global-start ggtags-global-start-command)
+      (message "cannot ggtags-global-restart"))))
 (global-set-key (kbd "<f10>") 'ggtags-global-restart)
 
 (setq xref-after-return-flag nil)
