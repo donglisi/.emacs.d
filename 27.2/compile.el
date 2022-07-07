@@ -2187,7 +2187,7 @@ Optional argument MINOR indicates this is called from
   ;; Note that compilation-next-error-function is for interfacing
   ;; with the next-error function in simple.el, and it's only
   ;; coincidentally named similarly to compilation-next-error.
-  (setq next-error-function 'compilation-next-error-function)
+  (setq next-error-function 'my-compilation-next-error-function)
   (set (make-local-variable 'comint-file-name-prefix)
        (or (file-remote-p default-directory) ""))
   (set (make-local-variable 'compilation-locs)
@@ -2505,6 +2505,10 @@ as a last resort."
   (if (and (compilation-buffer-internal-p) (not avoid-current))
       (current-buffer)
     (next-error-find-buffer avoid-current 'compilation-buffer-internal-p)))
+
+(defun my-compilation-next-error-function (n &optional reset)
+  (interactive "p")
+  (if (not xref-after-return-flag) (compilation-next-error-function n reset)))
 
 ;;;###autoload
 (defun compilation-next-error-function (n &optional reset)
