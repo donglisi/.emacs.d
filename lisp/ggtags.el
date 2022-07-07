@@ -909,8 +909,13 @@ blocking emacs."
     (xref-push-marker-stack ggtags-global-start-marker)
     (setq ggtags-global-start-marker t)))
 
+(setq ggtags-global-start-command nil)
+(setq ggtags-global-start-commands (list ()))
 (defun ggtags-global-start (command &optional directory)
-  (setq ggtags-global-start-command command)
+  (if (and (not ggtags-global-show-flag) (not xref-after-return-flag))
+    (progn
+      (push command ggtags-global-start-commands)
+      (setq ggtags-global-start-command command)))
   (let* ((default-directory (or directory (ggtags-current-project-root)))
          (split-window-preferred-function ggtags-split-window-function)
          (env ggtags-process-environment))
@@ -1649,8 +1654,10 @@ ggtags: history match invalid, jump to first match instead")
         (timer (timer-event-handler timer)))
       (ggtags-navigation-mode -1)
       (ggtags-navigation-mode-cleanup buf t))))
-  (if ggtags-global-restart-flag (ring-remove xref--marker-ring 0))
-  (setq ggtags-global-restart-flag nil))
+  (if ggtags-global-show-flag (ring-remove xref--marker-ring 0))
+  (if xref-after-return-flag (ring-remove xref--marker-ring 0))
+  (setq ggtags-global-show-flag nil)
+  (setq xref-after-return-flag nil))
 
 (defvar ggtags-global-mode-font-lock-keywords
   '(("^Global \\(exited abnormally\\|interrupt\\|killed\\|terminated\\)\\(?:.*with code \\([0-9]+\\)\\)?.*"

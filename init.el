@@ -328,12 +328,25 @@
       (message filename))))
 (global-set-key (kbd "<f7>") 'my-put-file-name-on-clipboard)
 
-(setq ggtags-global-restart-flag nil)
+(setq ggtags-global-show-flag nil)
 (defun ggtags-global-restart ()
   (interactive)
-  (if (get-buffer "*ggtags-global*") (setq ggtags-global-restart-flag t))
-    (ggtags-global-start ggtags-global-start-command))
+  (if (and (get-buffer "*ggtags-global*") (not (get-buffer-window "*ggtags-global*")))
+    (progn
+      (setq ggtags-global-show-flag t)
+      (if (car ggtags-global-start-commands) (ggtags-global-start (car ggtags-global-start-commands))))
+    (if ggtags-global-start-command (ggtags-global-start ggtags-global-start-command))))
 (global-set-key (kbd "<f10>") 'ggtags-global-restart)
+
+(setq xref-after-return-flag nil)
+(add-hook 'xref-after-return-hook
+  (lambda ()
+    (interactive)
+    (setq ggtags-global-start-command (pop ggtags-global-start-commands))
+    (if (car ggtags-global-start-commands)
+      (progn
+        (setq xref-after-return-flag t)
+        (ggtags-global-start (car ggtags-global-start-commands))))))
 
 (global-set-key (kbd "<f2>") 'count-lines-page)
 (global-set-key (kbd "<f4>") (lambda () (interactive) (switch-to-buffer nil)))
