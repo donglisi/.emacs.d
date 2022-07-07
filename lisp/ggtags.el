@@ -1654,10 +1654,14 @@ ggtags: history match invalid, jump to first match instead")
         (timer (timer-event-handler timer)))
       (ggtags-navigation-mode -1)
       (ggtags-navigation-mode-cleanup buf t))))
-  (if ggtags-global-show-flag (ring-remove xref--marker-ring 0))
-  (if xref-after-return-flag (ring-remove xref--marker-ring 0))
-  (setq ggtags-global-show-flag nil)
-  (setq xref-after-return-flag nil))
+  (if ggtags-global-show-flag
+    (progn
+      (ring-remove xref--marker-ring 0)
+      (setq ggtags-global-show-flag nil)))
+  (if xref-after-return-flag
+    (progn
+      (ring-remove xref--marker-ring 0)
+      (setq xref-after-return-flag nil))))
 
 (defvar ggtags-global-mode-font-lock-keywords
   '(("^Global \\(exited abnormally\\|interrupt\\|killed\\|terminated\\)\\(?:.*with code \\([0-9]+\\)\\)?.*"
