@@ -341,10 +341,10 @@
   (if (and (get-buffer "*ggtags-global*") (not (get-buffer-window "*ggtags-global*")))
     (progn
       (setq ggtags-global-show-flag t)
-      (if (car ggtags-global-start-commands) (ggtags-global-start (car ggtags-global-start-commands))))
+      (if (car ggtags-global-start-commands) (my-ggtags-global-start (car ggtags-global-start-commands))))
     (if (and ggtags-global-start-command
           (not (eq ggtags-global-start-command (car ggtags-global-start-commands))))
-      (ggtags-global-start ggtags-global-start-command)
+      (my-ggtags-global-start ggtags-global-start-command)
       (message "cannot ggtags-global-restart"))))
 (global-set-key (kbd "<f12>") 'ggtags-global-restart)
 
@@ -356,7 +356,7 @@
     (if (car ggtags-global-start-commands)
       (progn
         (setq xref-after-return-flag t)
-        (ggtags-global-start (car ggtags-global-start-commands))))))
+        (my-ggtags-global-start (car ggtags-global-start-commands))))))
 
 (global-set-key (kbd "<f2>") 'count-lines-page)
 (global-set-key (kbd "<f4>") (lambda () (interactive) (switch-to-buffer nil)))

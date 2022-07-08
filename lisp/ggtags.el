@@ -2434,5 +2434,9 @@ Invert the match when called with a prefix arg \\[universal-argument]."
   (ggtags-find-tag3 'grep (and invert-match "--invert-match")
                    "--" (ggtags-quote-pattern pattern)))
 
+(defun my-ggtags-global-start (cmd)
+  (ggtags-check-project)
+  (ggtags-global-start cmd))
+
 (provide 'ggtags)
 ;;; ggtags.el ends here
