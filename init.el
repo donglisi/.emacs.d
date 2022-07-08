@@ -2,6 +2,7 @@
 (load "~/.emacs.d/27.2/man.el")
 (load "~/.emacs.d/27.2/simple.el")
 (load "~/.emacs.d/27.2/compile.el")
+(load "~/.emacs.d/27.2/xref.el")
 (load "~/.emacs.d/27.2/cc-mode.el")
 (load "~/.emacs.d/27.2/hi-lock.el")
 (load "~/.emacs.d/27.2/tramp-sh.el")
@@ -244,7 +245,6 @@
    (interactive)
    (kill-buffer (current-buffer)))
 (global-set-key (kbd "C-x k") 'kill-current-buffer)
-(global-set-key (kbd "<f12>") 'kill-current-buffer)
 
 (defun kill-all-buffers () (interactive) (mapc 'kill-buffer (buffer-list)))
 (global-set-key (kbd "C-x C-k") 'kill-all-buffers)
@@ -339,7 +339,7 @@
           (not (eq ggtags-global-start-command (car ggtags-global-start-commands))))
       (ggtags-global-start ggtags-global-start-command)
       (message "cannot ggtags-global-restart"))))
-(global-set-key (kbd "<f10>") 'ggtags-global-restart)
+(global-set-key (kbd "<f12>") 'ggtags-global-restart)
 
 (setq xref-after-return-flag nil)
 (add-hook 'xref-after-return-hook
@@ -353,6 +353,7 @@
 
 (global-set-key (kbd "<f2>") 'count-lines-page)
 (global-set-key (kbd "<f4>") (lambda () (interactive) (switch-to-buffer nil)))
+(global-set-key (kbd "<f10>") (lambda () (interactive) (switch-to-buffer nil)))
 (global-set-key (kbd "<f5>") (lambda () (interactive) (buffer-disable-undo) (buffer-enable-undo) (message "reset-undo")))
 (global-set-key (kbd "<f8>") 'save-buffer)
 (global-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
