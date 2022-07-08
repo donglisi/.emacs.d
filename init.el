@@ -86,7 +86,10 @@
 
 (defun fzfk ()
   (interactive)
-  (if (get-buffer "*ggtags-global*") (progn (kill-buffer (get-buffer "*ggtags-global*")) (delete-window)))
+  (if (get-buffer "*ggtags-global*")
+    (progn
+      (if (get-buffer-window "*ggtags-global*") (delete-window))
+      (kill-buffer (get-buffer "*ggtags-global*"))))
   (setq origin-point-position (window-point))
   (let ((default-directory "/home/d/linux"))
     (goto-char (window-start))
