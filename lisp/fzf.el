@@ -145,7 +145,10 @@ configuration.")
         (let* ((text (buffer-substring-no-properties (point-min) (point-max)))
                 (lines (split-string text "\n" t "\s*>\s+"))
                 (target (car (last (butlast lines 1))))
-                (target-full (concat (file-name-as-directory directory) target))
+                (target-full (concat
+                              (if directory
+                                  (file-name-as-directory directory))
+                              target))
             )
             ; Kill fzf and restore windows
             ; Killing has to happen before applying the action so functions like swaping the buffer
@@ -160,6 +163,7 @@ configuration.")
         (kill-buffer fzf/buffer-name)
         (jump-to-register fzf/window-register)
         (message (format "FZF exited with code %s" exit-code))
+        (goto-char origin-point-position)
       )
     )
 
@@ -314,7 +318,7 @@ to start in."
                (lambda (x)
                  (let ((f (expand-file-name x d)))
                    (when (file-exists-p f)
-                     (find-file f)))))
+                     (progn (goto-char origin-point-position) (find-file f))))))
   )
 )
 

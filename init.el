@@ -30,6 +30,7 @@
 
 (setq minibuffer-origin-path nil)
 (setq message-origin-point-position nil)
+(setq origin-point-position nil)
 (setq inhibit-startup-screen t)
 (setq auto-save-list-file-prefix nil)
 (setq lazy-highlight-initial-delay 0)
@@ -85,7 +86,10 @@
 
 (defun fzfk ()
   (interactive)
+  (if (get-buffer "*ggtags-global*") (progn (kill-buffer (get-buffer "*ggtags-global*")) (delete-window)))
+  (setq origin-point-position (window-point))
   (let ((default-directory "/home/d/linux"))
+    (goto-char (window-start))
     (fzf-find-file)))
 (global-set-key (kbd "C-x C-t") 'fzfk)
 
