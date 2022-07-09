@@ -228,7 +228,7 @@
       (deactivate-mark))
     (let ((str (get-char-property (point) 'hi-lock-overlay-regexp)))
       (if str (hi-lock-unface-buffer str)))))
-(global-set-key (kbd "<f9>") 'highligt-selection)
+(global-set-key (kbd "<f10>") 'highligt-selection)
 
 (defmacro save-column (&rest body)
   `(let ((column (current-column)))
@@ -358,7 +358,6 @@
 (add-hook 'xref-after-return-hook
   (lambda ()
     (interactive)
-    (setq ggtags-global-start-command (pop ggtags-global-start-commands))
     (if (car ggtags-global-start-commands)
       (progn
         (setq xref-after-return-flag t)
@@ -366,7 +365,6 @@
 
 (global-set-key (kbd "<f2>") 'count-lines-page)
 (global-set-key (kbd "<f4>") (lambda () (interactive) (switch-to-buffer nil)))
-(global-set-key (kbd "<f10>") (lambda () (interactive) (switch-to-buffer nil)))
 (global-set-key (kbd "<f5>") (lambda () (interactive) (buffer-disable-undo) (buffer-enable-undo) (message "reset-undo")))
 (global-set-key (kbd "<f8>") 'save-buffer)
 (global-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
