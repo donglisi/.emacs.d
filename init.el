@@ -221,7 +221,13 @@
 
 (defun highligt-selection (beg end)
   (interactive "r")
-  (hi-lock-face-symbol-at-point2 (buffer-substring beg end)))
+  (if (region-active-p)
+    (progn
+      (message (buffer-substring beg end))
+      (hi-lock-face-symbol-at-point2 (buffer-substring beg end))
+      (deactivate-mark))
+    (let ((str (get-char-property (point) 'hi-lock-overlay-regexp)))
+      (if str (hi-lock-unface-buffer str)))))
 (global-set-key (kbd "<f9>") 'highligt-selection)
 
 (defmacro save-column (&rest body)
