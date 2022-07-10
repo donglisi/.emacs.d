@@ -153,7 +153,7 @@
 
 (defun find-file-current ()
   (interactive)
-  (let ((inhibit-message t))
+  (let ((inhibit-message t) (default-directory (if (buffer-file-name) default-directory "~/")))
     (minibuffer-with-setup-hook 'find-file-set-key (call-interactively 'find-file))))
 (global-set-key (kbd "C-x C-f") 'find-file-current)
 (global-set-key (kbd "<mouse-6>") (lambda () (interactive)
@@ -344,7 +344,10 @@
 (setq ggtags-global-show-flag nil)
 (defun ggtags-global-restart ()
   (interactive)
-  (if (and (get-buffer "*ggtags-global*") (not (get-buffer-window "*ggtags-global*")))
+  (if (and
+        (get-buffer "*ggtags-global*")
+        (not (get-buffer-window "*ggtags-global*"))
+        (eq (ggtags-current-project-root) (car ggtags-global-start-roots)))
     (progn
       (setq ggtags-global-show-flag t)
       (if (car ggtags-global-start-commands) (my-ggtags-global-start (car ggtags-global-start-commands))))
@@ -358,7 +361,8 @@
 (add-hook 'xref-after-return-hook
   (lambda ()
     (interactive)
-    (if (car ggtags-global-start-commands)
+    (if (and (eq (ggtags-current-project-root) (car ggtags-global-start-roots))
+             (car ggtags-global-start-commands))
       (progn
         (setq xref-after-return-flag t)
         (my-ggtags-global-start (car ggtags-global-start-commands))))))

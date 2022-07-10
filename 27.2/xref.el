@@ -396,6 +396,7 @@ value."
     (when (ring-empty-p ring)
       (user-error "Marker stack is empty"))
     (let ((marker (ring-remove ring 0)))
+      (pop ggtags-global-start-roots)
       (setq ggtags-global-start-command (pop ggtags-global-start-commands))
       (switch-to-buffer (or (marker-buffer marker)
                             (user-error "The marked buffer has been deleted")))

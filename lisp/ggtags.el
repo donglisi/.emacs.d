@@ -911,10 +911,12 @@ blocking emacs."
 
 (setq ggtags-global-start-command nil)
 (setq ggtags-global-start-commands (list ()))
+(setq ggtags-global-start-roots (list ()))
 (defun ggtags-global-start (command &optional directory)
   (if (and (not ggtags-global-show-flag) (not xref-after-return-flag))
     (progn
       (push command ggtags-global-start-commands)
+      (push (ggtags-current-project-root) ggtags-global-start-roots)
       (setq ggtags-global-start-command command)))
   (let* ((default-directory (or directory (ggtags-current-project-root)))
          (split-window-preferred-function ggtags-split-window-function)
