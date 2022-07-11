@@ -176,7 +176,6 @@
   (interactive)
   (minibuffer-with-setup-hook 'minibuffer-complete (call-interactively 'switch-to-buffer)))
 (global-set-key (kbd "C-x b") 'switch-buffer-completion)
-(global-set-key (kbd "<f11>") 'switch-buffer-completion)
 
 (defun isearch-repeat-forward+ ()
   (interactive)
@@ -344,17 +343,17 @@
 (setq ggtags-global-show-flag nil)
 (defun ggtags-global-restart ()
   (interactive)
-  (if (and
-        (get-buffer "*ggtags-global*")
-        (not (get-buffer-window "*ggtags-global*"))
-        (eq (ggtags-current-project-root) (car ggtags-global-start-roots)))
-    (progn
-      (setq ggtags-global-show-flag t)
-      (if (car ggtags-global-start-commands) (my-ggtags-global-start (car ggtags-global-start-commands))))
-    (if (and ggtags-global-start-command
-          (not (eq ggtags-global-start-command (car ggtags-global-start-commands))))
-      (my-ggtags-global-start ggtags-global-start-command)
-      (message "cannot ggtags-global-restart"))))
+  (if (or (not (car ggtags-global-start-roots))
+           (eq (ggtags-current-project-root) (car ggtags-global-start-roots)))
+    (if (and (get-buffer "*ggtags-global*") (not (get-buffer-window "*ggtags-global*")))
+      (progn
+        (setq ggtags-global-show-flag t)
+        (if (car ggtags-global-start-commands) (my-ggtags-global-start (car ggtags-global-start-commands))))
+      (if (and ggtags-global-start-command
+               (not (eq ggtags-global-start-command (car ggtags-global-start-commands))))
+        (my-ggtags-global-start ggtags-global-start-command)
+        (message "not need ggtags-global-restart")))
+    (message "cannot ggtags-global-restart")))
 (global-set-key (kbd "<f12>") 'ggtags-global-restart)
 
 (setq xref-after-return-flag nil)
@@ -367,7 +366,7 @@
         (setq xref-after-return-flag t)
         (my-ggtags-global-start (car ggtags-global-start-commands))))))
 
-(global-set-key (kbd "<f2>") 'count-lines-page)
+(global-set-key (kbd "<f11>") 'count-lines-page)
 (global-set-key (kbd "<f4>") (lambda () (interactive) (switch-to-buffer nil)))
 (global-set-key (kbd "<f5>") (lambda () (interactive) (buffer-disable-undo) (buffer-enable-undo) (message "reset-undo")))
 (global-set-key (kbd "<f8>") 'save-buffer)
