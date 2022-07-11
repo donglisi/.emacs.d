@@ -1497,9 +1497,8 @@ commands `next-error' and `previous-error'.
          (if (and (not ggtags-global-show-flag) (not xref-after-return-flag))
             (progn
               (pop ggtags-global-start-roots)
-              (pop ggtags-global-start-commands)))
-          (if ggtags-global-show-flag (setq ggtags-global-show-flag nil))
-          (if xref-after-return-flag (setq xref-after-return-flag nil)))
+              (pop ggtags-global-start-commands)
+              (setq ggtags-global-start-command nil))))
      (cons (if (> exit-status 0)
                msg
              (format "found %d %s" count
