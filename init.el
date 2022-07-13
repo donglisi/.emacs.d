@@ -168,7 +168,7 @@
 
 (defun imenu-completion ()
   (interactive)
-  (minibuffer-with-setup-hook 'minibuffer-complete (call-interactively 'imenu)))
+  (minibuffer-with-setup-hook 'minibuffer-completion-help (call-interactively 'imenu)))
 (global-set-key (kbd "M-i") 'imenu-completion)
 (global-set-key (kbd "<mouse-7>") (lambda () (interactive)
   (if (get-buffer-window "*Completions*") (minibuffer-path-origin) (imenu-completion))))
@@ -344,12 +344,12 @@
 (setq ggtags-global-show-flag nil)
 (defun ggtags-global-restart ()
   (interactive)
-  (if (or (not (car ggtags-global-start-roots))
-           (eq (ggtags-current-project-root) (car ggtags-global-start-roots)))
-    (if (and (get-buffer "*ggtags-global*") (not (get-buffer-window "*ggtags-global*")))
+  (if (and (ggtags-current-project-root)
+        (string-equal (ggtags-current-project-root) ggtags-global-start-root))
+     (if (and (get-buffer "*ggtags-global*") (not (get-buffer-window "*ggtags-global*")))
       (progn
         (setq ggtags-global-show-flag t)
-        (if (car ggtags-global-start-commands) (my-ggtags-global-start (car ggtags-global-start-commands))))
+        (my-ggtags-global-start (car ggtags-global-start-commands)))
       (if (and ggtags-global-start-command
                (not (eq ggtags-global-start-command (car ggtags-global-start-commands))))
         (my-ggtags-global-start ggtags-global-start-command)
@@ -361,8 +361,8 @@
 (add-hook 'xref-after-return-hook
   (lambda ()
     (interactive)
-    (if (and (eq (ggtags-current-project-root) (car ggtags-global-start-roots))
-             (car ggtags-global-start-commands))
+    (if (and (ggtags-current-project-root)
+          (string-equal (ggtags-current-project-root) (car ggtags-global-start-roots)))
       (progn
         (setq xref-after-return-flag t)
         (my-ggtags-global-start (car ggtags-global-start-commands))))))

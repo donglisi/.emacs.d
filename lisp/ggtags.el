@@ -910,6 +910,7 @@ blocking emacs."
     (setq ggtags-global-start-marker t)))
 
 (setq ggtags-global-start-command nil)
+(setq ggtags-global-start-root nil)
 (setq ggtags-global-start-commands (list ()))
 (setq ggtags-global-start-roots (list ()))
 (defun ggtags-global-start (command &optional directory)
@@ -917,6 +918,7 @@ blocking emacs."
     (progn
       (push command ggtags-global-start-commands)
       (push (ggtags-current-project-root) ggtags-global-start-roots)
+      (setq ggtags-global-start-root (ggtags-current-project-root))
       (setq ggtags-global-start-command command)))
   (let* ((default-directory (or directory (ggtags-current-project-root)))
          (split-window-preferred-function ggtags-split-window-function)
@@ -1497,8 +1499,7 @@ commands `next-error' and `previous-error'.
          (if (and (not ggtags-global-show-flag) (not xref-after-return-flag))
             (progn
               (pop ggtags-global-start-roots)
-              (pop ggtags-global-start-commands)
-              (setq ggtags-global-start-command nil))))
+              (pop ggtags-global-start-commands))))
      (cons (if (> exit-status 0)
                msg
              (format "found %d %s" count
