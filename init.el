@@ -31,6 +31,7 @@
 
 (setq minibuffer-origin-path nil)
 (setq message-origin-point-position nil)
+(setq message-origin-point-position-ow nil)
 (setq origin-point-position nil)
 (setq inhibit-startup-screen t)
 (setq auto-save-list-file-prefix nil)
@@ -114,13 +115,19 @@
 
 (defun keyboard-escape-quit2 ()
   (interactive)
-  (if message-origin-point-position (progn (goto-char message-origin-point-position) (setq message-origin-point-position nil)))
+  (my-set-window-point)
   (keyboard-escape-quit))
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit2)
 
+(defun my-set-window-point()
+  (if message-origin-point-position (progn (goto-char message-origin-point-position) (setq message-origin-point-position nil)))
+  (if message-origin-point-position-ow
+    (progn (set-window-point (window-right (selected-window)) message-origin-point-position-ow)
+        (setq message-origin-point-position-ow nil))))
+
 (defun keyboard-quit2 ()
   (interactive)
-  (if message-origin-point-position (progn (goto-char message-origin-point-position) (setq message-origin-point-position nil)))
+  (my-set-window-point)
   (keyboard-quit))
 (global-set-key (kbd "C-g") 'keyboard-quit2)
 
@@ -322,6 +329,10 @@
         (str (shell-command-to-string (concat "transw " (thing-at-point 'word 'no-properties) " | head -40"))))
     (setq message-origin-point-position (window-point))
     (goto-char (window-start))
+    (let ((ow (window-right (selected-window))))
+       (if ow
+         (progn (setq message-origin-point-position-ow (window-point ow))
+           (set-window-point ow (window-start ow)))))
     (message "%s" str)))
 (global-set-key (kbd "C-c w") 'translation-word)
 
