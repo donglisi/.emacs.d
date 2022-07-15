@@ -184,6 +184,7 @@
   (interactive)
   (minibuffer-with-setup-hook 'minibuffer-complete (call-interactively 'switch-to-buffer)))
 (global-set-key (kbd "C-x b") 'switch-buffer-completion)
+(global-set-key (kbd "<f11>") 'switch-buffer-completion)
 
 (defun isearch-repeat-forward+ ()
   (interactive)
@@ -378,10 +379,9 @@
         (setq xref-after-return-flag t)
         (my-ggtags-global-start (car ggtags-global-start-commands))))))
 
-(global-set-key (kbd "<f11>") 'count-lines-page)
 (global-set-key (kbd "<f4>") (lambda () (interactive) (switch-to-buffer nil)))
 (global-set-key (kbd "<f5>") (lambda () (interactive) (buffer-disable-undo) (buffer-enable-undo) (message "reset-undo")))
-(global-set-key (kbd "<f8>") 'save-buffer)
+(global-set-key (kbd "<f9>") 'count-lines-page)
 (global-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
 (global-set-key (kbd "<home>") 'beginning-of-buffer)
 (global-set-key (kbd "<end>") 'end-of-buffer)
