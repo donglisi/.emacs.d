@@ -887,7 +887,7 @@ blocking emacs."
                             (`reference "--reference")
                             (`symbol "--symbol")
                             (`path "--path")
-                            (`grep "--grep")
+                            (`grep "-all")
                             (`idutils "--idutils")))
                     args)))
     (mapconcat #'identity (delq nil xs) " ")))
@@ -2072,6 +2072,7 @@ When finished invoke CALLBACK in BUFFER with process exit status."
     (define-key m "\M-g" 'ggtags-grep)
     (define-key m "\M-t" 'ggtags-grep2)
     (define-key m "\M-d" 'ggtags-grep3)
+    (define-key m "\M-." 'ggtags-find-tag-dwim2)
     (define-key m "\M-i" 'ggtags-idutils-query)
     (define-key m "\M-b" 'ggtags-browse-file-as-hypertext)
 ;;    (define-key m "\M-k" 'ggtags-kill-file-buffers)
@@ -2426,7 +2427,7 @@ Invert the match when called with a prefix arg \\[universal-argument]."
                             (`reference "--reference")
                             (`symbol "--symbol")
                             (`path "--path")
-                            (`grep "--grep")
+                            (`grep "-all")
                             (`idutils "--idutils")))
                     args)))
     (mapconcat #'identity (delq nil xs) " ")))
@@ -2446,6 +2447,26 @@ Invert the match when called with a prefix arg \\[universal-argument]."
 (defun my-ggtags-global-start (cmd)
   (ggtags-check-project)
   (ggtags-global-start cmd))
+
+(defun ggtags-find-tag-dwim2 (name &optional what)
+  (interactive
+   (let ((include (and (not current-prefix-arg) (ggtags-include-file))))
+     (ggtags-ensure-project)
+     (if include (list include 'include)
+       (list (ggtags-read-tag 'definition current-prefix-arg)
+             (and current-prefix-arg 'definition)))))
+  (ggtags-check-project)    ; For `ggtags-current-project-root' below.
+  (cond
+   ((eq what 'include)
+    (ggtags-find-file name))
+   ((or (eq what 'definition)
+        (not buffer-file-name)
+        (not (ggtags-project-has-refs (ggtags-find-project)))
+        (not (ggtags-project-file-p buffer-file-name)))
+    (ggtags-find-definition name))
+   (t (ggtags-find-tag
+       "-all"
+       "--" (shell-quote-argument name)))))
 
 (provide 'ggtags)
 ;;; ggtags.el ends here
