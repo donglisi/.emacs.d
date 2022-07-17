@@ -29,7 +29,7 @@
 (save-place-mode)
 (delete-selection-mode)
 
-(setq minibuffer-origin-path nil)
+(setq minibuffer-origin-path "")
 (setq message-origin-point-position nil)
 (setq message-origin-point-position-ow nil)
 (setq origin-point-position nil)
@@ -322,7 +322,8 @@
     (local-set-key (kbd "<mouse-8>") 'next-error)
     (local-set-key (kbd "<mouse-9>") 'previous-error)
     (global-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
-    (ggtags-mode)))
+    (ggtags-mode)
+    (display-line-numbers-mode)))
 
 (defun translation-word ()
   (interactive)
@@ -413,6 +414,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(display-line-numbers-width 4)
  '(enable-local-variables nil)
  '(hi-lock-file-patterns-policy 'never)
  '(hi-lock-highlight-range 2000000)
@@ -424,4 +426,5 @@
  '(read-buffer-completion-ignore-case t)
  '(show-paren-mode t)
  '(tool-bar-mode nil)
- '(use-dialog-box nil))
+ '(use-dialog-box nil)
+ '(xref-marker-ring-length 9999))
