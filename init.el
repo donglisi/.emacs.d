@@ -32,6 +32,7 @@
 (setq minibuffer-origin-path "")
 (setq message-origin-point-position nil)
 (setq message-origin-point-position-ow nil)
+(setq origin-window nil)
 (setq origin-point-position nil)
 (setq inhibit-startup-screen t)
 (setq auto-save-list-file-prefix nil)
@@ -103,15 +104,17 @@
     (interactive)
     (if (get-buffer-window "*Completions*")
       (let ((window (get-buffer-window (window-buffer (minibuffer-selected-window)))))
+        (setq origin-window window)
         (setq origin-point-position (window-point window))
         (set-window-point window (window-start window))))))
 
 (add-hook 'minibuffer-exit-hook
   (lambda ()
     (interactive)
-    (if (get-buffer-window "*Completions*")
-      (let ((window (get-buffer-window (window-buffer (minibuffer-selected-window)))))
-        (set-window-point window (symbol-value 'origin-point-position))))))
+    (if origin-window
+      (progn
+        (set-window-point origin-window origin-point-position)
+        (setq origin-window nil)))))
 
 (defun keyboard-escape-quit2 ()
   (interactive)
@@ -427,4 +430,4 @@
  '(show-paren-mode t)
  '(tool-bar-mode nil)
  '(use-dialog-box nil)
- '(xref-marker-ring-length 9999))
+ '(xref-marker-ring-length 1000))
