@@ -6,7 +6,7 @@
 (load "~/.emacs.d/27.2/cc-mode.el")
 (load "~/.emacs.d/27.2/hi-lock.el")
 (load "~/.emacs.d/27.2/tramp-sh.el")
-(load "~/.emacs.d/27.2/cc-menus.el")
+;; (load "~/.emacs.d/27.2/cc-menus.el")
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
@@ -58,6 +58,11 @@
 (set-face-attribute 'region nil :background "#666" :foreground "#ffffff")
 (remove-hook 'xref-after-return-hook 'xref-pulse-momentarily)
 (setenv "MANWIDTH" "192")
+
+(add-hook 'c-mode-hook
+      (defun my-c-mode-hook ()
+          (setcar (cdr (assoc "Class" imenu-generic-expression ))
+              "^\\(template[    ]*<[^>]+>[  ]*\\)?\\(class\\|struct\\|union\\)[     ]+\\([[:alnum:]_]+\\(<[^>]+>\\)?\\)\\([     \n]\\|\\\\\n\\)*[:{]")))
 
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
