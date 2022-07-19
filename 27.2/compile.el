@@ -1098,7 +1098,7 @@ POS and RES.")
       ;; Place a `compilation-message' everywhere we change text-properties
       ;; so compilation--remove-properties can know what to remove.
       compilation-message ,(compilation--make-message nil 0 nil)
-      mouse-face highlight
+      mouse-face nil
       keymap compilation-button-map
       help-echo "mouse-2: visit destination directory")))
 
@@ -1342,7 +1342,7 @@ FMTS is a list of format specs for transforming the file name.
       compilation-message ,(compilation--make-message loc type end-loc)
       help-echo , nil
       keymap compilation-button-map
-      mouse-face highlight)))
+      mouse-face nil)))
 
 (defun compilation--put-prop (matchnum prop val)
   (when (and (integerp matchnum) (match-beginning matchnum))
