@@ -282,6 +282,11 @@
   (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 (global-set-key (kbd "C-x C-o") 'kill-other-buffers)
 
+(add-hook 'Buffer-menu-mode-hook
+  (lambda ()
+    (local-set-key (kbd "<mouse-1>") (lambda () (interactive) (Buffer-menu-this-window) (delete-other-windows)))
+    (local-set-key (kbd "<return>") (lambda () (interactive) (Buffer-menu-this-window) (delete-other-windows)))))
+
 (add-hook 'ggtags-global-mode-hook
   (lambda ()
     (local-set-key (kbd "<mouse-1>") 'compile-goto-error)
@@ -318,6 +323,8 @@
 
     (local-set-key (kbd "<double-down-mouse-1>") (lambda ()(interactive)))
     (local-set-key (kbd "<double-mouse-1>") 'ggtags-find-tag-dwim)
+    (local-set-key (kbd "<mouse-8>") (lambda () (interactive) (if (get-buffer-window "*ggtags-global*") (next-error) (list-buffers))))
+    (local-set-key (kbd "<mouse-9>") (lambda () (interactive) (if (get-buffer-window "*ggtags-global*") (previous-error) (switch-buffer-toggle))))
     (local-set-key (kbd "M-n") (lambda () (interactive) (if (get-buffer-window "*ggtags-global*") (next-error) (move-line-down))))
     (local-set-key (kbd "M-p") (lambda () (interactive) (if (get-buffer-window "*ggtags-global*") (previous-error) (move-line-up))))
     (local-set-key (kbd "<mouse-2>") (lambda () (interactive)
@@ -326,8 +333,6 @@
 	(if (get-buffer "*ggtags-global*")
           (ggtags-navigation-mode-abort)
           (xref-pop-marker-stack)))))
-    (local-set-key (kbd "<mouse-8>") 'next-error)
-    (local-set-key (kbd "<mouse-9>") 'previous-error)
     (global-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
     (ggtags-mode)
     (display-line-numbers-mode)))
@@ -387,7 +392,11 @@
         (setq xref-after-return-flag t)
         (my-ggtags-global-start (car ggtags-global-start-commands))))))
 
-(global-set-key (kbd "<f4>") (lambda () (interactive) (switch-to-buffer nil)))
+(defun switch-buffer-toggle ()
+  (interactive)
+  (switch-to-buffer nil))
+
+(global-set-key (kbd "<f4>") 'switch-buffer-toggle)
 (global-set-key (kbd "<f5>") (lambda () (interactive) (buffer-disable-undo) (buffer-enable-undo) (message "reset-undo")))
 (global-set-key (kbd "<f9>") 'count-lines-page)
 (global-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
@@ -399,6 +408,8 @@
 (global-set-key (kbd "C-M-l") (lambda () (interactive) (recenter-top-bottom -1)))
 (global-set-key (kbd "C-M-r") (lambda () (interactive) (move-to-window-line-top-bottom -1)))
 (global-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)
+(global-set-key (kbd "<mouse-8>") 'list-buffers)
+(global-set-key (kbd "<mouse-9>") 'switch-buffer-toggle)
 (global-set-key "\S-\M-p" "\C-u1\C-v")
 (global-set-key "\S-\M-n" "\C-u1\M-v")
 (global-set-key (kbd "<prior>") 'scroll-down-command)
@@ -421,6 +432,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(Buffer-menu-mode-width 4)
  '(display-line-numbers-width 4)
  '(enable-local-variables nil)
  '(hi-lock-file-patterns-policy 'never)
