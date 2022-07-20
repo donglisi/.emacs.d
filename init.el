@@ -447,6 +447,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(Buffer-menu-mode-width 4)
+ '(Buffer-menu-name-width 22)
+ '(Buffer-menu-size-width 6)
  '(display-line-numbers-width 4)
  '(enable-local-variables nil)
  '(hi-lock-file-patterns-policy 'never)

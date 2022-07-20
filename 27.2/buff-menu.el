@@ -655,10 +655,7 @@ means list those buffers and no others."
     (if Buffer-menu-buffer+size-width
 	(setq name-width (- Buffer-menu-buffer+size-width size-width)))
     (setq tabulated-list-format
-	  (vector '("C" 1 t :pad-right 0)
-		  '("R" 1 t :pad-right 0)
-		  '("M" 1 t)
-		  `("Buffer" ,name-width t)
+	  (vector `("Buffer" ,name-width t)
 		  `("Line" ,size-width tabulated-list-entry-size-> :right-align t)
 		  '("File" 1 t)))
     (setq tabulated-list-use-header-line Buffer-menu-use-header-line)
@@ -676,13 +673,7 @@ means list those buffers and no others."
 			      (not (eq buffer buffer-menu-buffer))
 			      (or file show-non-file))))
 	    (push (list buffer
-			(vector (cond
-                                 ((eq buffer old-buffer) ".")
-                                 ((member buffer marked-buffers) ">")
-                                 (t " "))
-				(if buffer-read-only "%" " ")
-				(if (buffer-modified-p) "*" " ")
-				(Buffer-menu--pretty-name name)
+			(vector (Buffer-menu--pretty-name name)
 				(number-to-string (count-lines (point-min) (point-max)))
 				(Buffer-menu--pretty-file-name file)))
 		  entries)))))
