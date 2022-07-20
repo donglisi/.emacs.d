@@ -58,11 +58,6 @@
 (remove-hook 'xref-after-return-hook 'xref-pulse-momentarily)
 (setenv "MANWIDTH" "192")
 
-(add-hook 'c-mode-hook
-      (defun my-c-mode-hook ()
-          (setcar (cdr (assoc "Class" imenu-generic-expression ))
-              "^\\(template[    ]*<[^>]+>[  ]*\\)?\\(class\\|struct\\|union\\)[     ]+\\([[:alnum:]_]+\\(<[^>]+>\\)?\\)\\([     \n]\\|\\\\\n\\)*[:{]")))
-
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 (global-set-key (kbd "C-M-u") 'upcase-region)
@@ -282,10 +277,16 @@
   (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 (global-set-key (kbd "C-x C-o") 'kill-other-buffers)
 
+(defun menu-this-window ()
+  (interactive)
+  (Buffer-menu-this-window)
+  (delete-other-windows)
+  (kill-buffer (get-buffer "*Buffer List*")))
+
 (add-hook 'Buffer-menu-mode-hook
   (lambda ()
-    (local-set-key (kbd "<mouse-1>") (lambda () (interactive) (Buffer-menu-this-window) (delete-other-windows)))
-    (local-set-key (kbd "<return>") (lambda () (interactive) (Buffer-menu-this-window) (delete-other-windows)))))
+    (local-set-key (kbd "<mouse-1>") 'menu-this-window)
+    (local-set-key (kbd "<return>") 'menu-this-window)))
 
 (add-hook 'ggtags-global-mode-hook
   (lambda ()
@@ -300,6 +301,14 @@
   (lambda ()
     (local-set-key (kbd "<mouse-1>") (lambda () (interactive (progn (choose-completion) (execute-kbd-tab)))))
     (local-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)))
+
+(defun mouse-8 ()
+  (interactive)
+  (if (get-buffer-window "*Buffer List*")
+    (delete-other-windows)
+    (if (get-buffer-window "*ggtags-global*")
+      (next-error)
+      (list-buffers))))
 
 (add-hook 'c-mode-hook
   (lambda ()
@@ -323,7 +332,6 @@
 
     (local-set-key (kbd "<double-down-mouse-1>") (lambda ()(interactive)))
     (local-set-key (kbd "<double-mouse-1>") 'ggtags-find-tag-dwim)
-    (local-set-key (kbd "<mouse-8>") (lambda () (interactive) (if (get-buffer-window "*ggtags-global*") (next-error) (list-buffers))))
     (local-set-key (kbd "<mouse-9>") (lambda () (interactive) (if (get-buffer-window "*ggtags-global*") (previous-error) (switch-buffer-toggle))))
     (local-set-key (kbd "M-n") (lambda () (interactive) (if (get-buffer-window "*ggtags-global*") (next-error) (move-line-down))))
     (local-set-key (kbd "M-p") (lambda () (interactive) (if (get-buffer-window "*ggtags-global*") (previous-error) (move-line-up))))
@@ -336,6 +344,11 @@
     (global-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
     (ggtags-mode)
     (display-line-numbers-mode)))
+
+(add-hook 'c-mode-hook
+  (defun my-c-mode-hook ()
+    (setcar (cdr (assoc "Class" imenu-generic-expression ))
+      "^\\(template[    ]*<[^>]+>[  ]*\\)?\\(class\\|struct\\|union\\)[     ]+\\([[:alnum:]_]+\\(<[^>]+>\\)?\\)\\([     \n]\\|\\\\\n\\)*[:{]")))
 
 (defun translation-word ()
   (interactive)
@@ -408,7 +421,7 @@
 (global-set-key (kbd "C-M-l") (lambda () (interactive) (recenter-top-bottom -1)))
 (global-set-key (kbd "C-M-r") (lambda () (interactive) (move-to-window-line-top-bottom -1)))
 (global-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)
-(global-set-key (kbd "<mouse-8>") 'list-buffers)
+(global-set-key (kbd "<mouse-8>") 'mouse-8)
 (global-set-key (kbd "<mouse-9>") 'switch-buffer-toggle)
 (global-set-key "\S-\M-p" "\C-u1\C-v")
 (global-set-key "\S-\M-n" "\C-u1\M-v")
