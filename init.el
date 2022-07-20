@@ -6,6 +6,7 @@
 (load "~/.emacs.d/27.2/cc-mode.el")
 (load "~/.emacs.d/27.2/hi-lock.el")
 (load "~/.emacs.d/27.2/tramp-sh.el")
+(load "~/.emacs.d/27.2/buff-menu.el")
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
