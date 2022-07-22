@@ -187,7 +187,6 @@
   (interactive)
   (minibuffer-with-setup-hook 'minibuffer-complete (call-interactively 'switch-to-buffer)))
 (global-set-key (kbd "C-x b") 'switch-buffer-completion)
-(global-set-key (kbd "<f11>") 'switch-buffer-completion)
 
 (defun isearch-repeat-forward+ ()
   (interactive)
@@ -286,13 +285,15 @@
 
 (add-hook 'Buffer-menu-mode-hook
   (lambda ()
-    (local-set-key (kbd "<mouse-1>") 'menu-this-window)
-    (local-set-key (kbd "<return>") 'menu-this-window)))
+    (local-set-key (kbd "<mouse-1>") 'menu-this-window)))
 
 (add-hook 'ggtags-global-mode-hook
   (lambda ()
     (local-set-key (kbd "<mouse-1>") 'compile-goto-error)
-    (local-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)
+    (local-set-key (kbd "<mouse-2>") (lambda () (interactive)
+      (if (eq (get-buffer "*ggtags-global*") (window-buffer (selected-window)))
+        (delete-window)
+        (delete-other-windows))))
     (local-set-key (kbd "<mouse-8>") 'next-error)
     (local-set-key (kbd "<mouse-9>") 'previous-error)))
 
@@ -412,7 +413,7 @@
 
 (global-set-key (kbd "<f4>") 'switch-buffer-toggle)
 (global-set-key (kbd "<f5>") (lambda () (interactive) (buffer-disable-undo) (buffer-enable-undo) (message "reset-undo")))
-(global-set-key (kbd "<f9>") 'count-lines-page)
+(global-set-key (kbd "<f11>") 'count-lines-page)
 (global-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
 (global-set-key (kbd "<home>") 'beginning-of-buffer)
 (global-set-key (kbd "<end>") 'end-of-buffer)
