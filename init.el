@@ -292,8 +292,9 @@
     (local-set-key (kbd "<mouse-1>") 'compile-goto-error)
     (local-set-key (kbd "<mouse-2>") (lambda () (interactive)
       (if (eq (get-buffer "*ggtags-global*") (window-buffer (selected-window)))
-        (progn (kill-current-buffer) (delete-window))
-        (delete-other-windows))))
+        (delete-window)
+        (delete-other-windows))
+      (bury-buffer (get-buffer "*ggtags-global*"))))
     (local-set-key (kbd "<mouse-8>") 'next-error)
     (local-set-key (kbd "<mouse-9>") 'previous-error)))
 
