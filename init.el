@@ -29,11 +29,6 @@
 (save-place-mode)
 (delete-selection-mode)
 
-(setq minibuffer-origin-path "")
-(setq message-origin-point-position nil)
-(setq message-origin-point-position-ow nil)
-(setq origin-window nil)
-(setq origin-point-position nil)
 (setq inhibit-startup-screen t)
 (setq auto-save-list-file-prefix nil)
 (setq lazy-highlight-initial-delay 0)
@@ -51,7 +46,6 @@
 (setq-default enable-recursive-minibuffers t)
 (setq-default mode-line-format (list '(:eval (if (buffer-file-name) "%f" "%b")) " (%p %l %C)"))
 
-(add-to-list 'auto-mode-alist '("\\.S\\'" . fundamental-mode))
 (add-to-list 'auto-mode-alist '("\\Makefile\\'" . fundamental-mode))
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -99,6 +93,37 @@
     (fzf-find-file)))
 (global-set-key (kbd "C-x C-t") 'fzfk)
 
+(setq origin-window nil)
+(setq origin-point-position nil)
+(setq origin-point-position-ow nil)
+
+(defun message-point-position ()
+  (setq origin-point-position (window-point))
+  (goto-char (window-start))
+  (let ((ow (window-right (selected-window))))
+     (if ow
+       (progn
+         (setq origin-point-position-ow (window-point ow))
+         (set-window-point ow (window-start ow))))))
+
+(defun my-set-window-point()
+  (if origin-point-position
+    (progn
+      (goto-char origin-point-position)
+      (setq origin-point-position nil)))
+  (if origin-point-position-ow
+    (progn
+      (set-window-point (window-right (selected-window)) origin-point-position-ow)
+      (setq origin-point-position-ow nil))))
+
+(defun translation-word ()
+  (interactive)
+  (let* ((default-directory "~/")
+         (str (shell-command-to-string (concat "transw " (thing-at-point 'word 'no-properties) " | head -40"))))
+    (message-point-position)
+    (message "%s" str)))
+(global-set-key (kbd "C-c w") 'translation-word)
+
 (add-hook 'minibuffer-setup-hook
   (lambda ()
     (interactive)
@@ -114,7 +139,8 @@
     (if origin-window
       (progn
         (set-window-point origin-window origin-point-position)
-        (setq origin-window nil)))))
+        (setq origin-window nil)
+        (setq origin-point-position nil)))))
 
 (defun keyboard-escape-quit2 ()
   (interactive)
@@ -122,18 +148,13 @@
   (keyboard-escape-quit))
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit2)
 
-(defun my-set-window-point()
-  (if message-origin-point-position (progn (goto-char message-origin-point-position) (setq message-origin-point-position nil)))
-  (if message-origin-point-position-ow
-    (progn (set-window-point (window-right (selected-window)) message-origin-point-position-ow)
-        (setq message-origin-point-position-ow nil))))
-
 (defun keyboard-quit2 ()
   (interactive)
   (my-set-window-point)
   (keyboard-quit))
 (global-set-key (kbd "C-g") 'keyboard-quit2)
 
+(setq minibuffer-origin-path "")
 (defun minibuffer-path-up ()
   (interactive)
   (let ((path (minibuffer-contents)))
@@ -141,7 +162,6 @@
     (delete-minibuffer-contents)
     (insert (replace-regexp-in-string "/[^/]*/?$" "/" path)))
   (minibuffer-completion-help))
-
 (defun minibuffer-path-origin ()
   (interactive)
   (delete-minibuffer-contents)
@@ -188,6 +208,14 @@
   (minibuffer-with-setup-hook 'minibuffer-complete (call-interactively 'switch-to-buffer)))
 (global-set-key (kbd "C-x b") 'switch-buffer-completion)
 
+(defun search-selection ()
+  (interactive)
+  (region-active-p)
+  (kill-ring-save (region-beginning) (region-end))
+  (isearch-mode t nil nil nil)
+  (isearch-yank-pop))
+(global-set-key (kbd "<f3>") 'search-selection)
+
 (defun isearch-repeat-forward+ ()
   (interactive)
   (unless isearch-forward
@@ -206,14 +234,6 @@
     (isearch-repeat-backward)))
 (define-key isearch-mode-map (kbd "C-r") 'isearch-repeat-backward+)
 
-(defun search-selection ()
-  (interactive)
-  (region-active-p)
-  (kill-ring-save (region-beginning) (region-end))
-  (isearch-mode t nil nil nil)
-  (isearch-yank-pop))
-(global-set-key (kbd "<f3>") 'search-selection)
-
 (defun highlight-toggle ()
   (interactive)
   (let ((str (get-char-property (point) 'hi-lock-overlay-regexp)))
@@ -227,7 +247,6 @@
       (deactivate-mark))
     (progn (mouse-set-point click) (highlight-toggle))))
 (global-set-key (kbd "<mouse-3>") 'mouse-highlight-toggle)
-(global-set-key (kbd "<f1>") (lambda () (interactive) (unhighlight-regexp t)))
 
 (defun highligt-selection (beg end)
   (interactive "r")
@@ -236,37 +255,29 @@
       (message (buffer-substring beg end))
       (hi-lock-face-symbol-at-point2 (buffer-substring beg end))
       (deactivate-mark))
-    (let ((str (get-char-property (point) 'hi-lock-overlay-regexp)))
-      (if str (hi-lock-unface-buffer str)))))
+    (highlight-toggle)))
 (global-set-key (kbd "<f10>") 'highligt-selection)
+
+(global-set-key (kbd "<f1>") (lambda () (interactive) (unhighlight-regexp t)))
 
 (defmacro save-column (&rest body)
   `(let ((column (current-column)))
-     (unwind-protect
-         (progn ,@body)
-       (move-to-column column))))
+     (unwind-protect (progn ,@body) (move-to-column column))))
 (put 'save-column 'lisp-indent-function 0)
 
 (defun move-line-up ()
   (interactive)
-  (save-column
-    (transpose-lines 1)
-    (forward-line -2)))
+  (save-column (transpose-lines 1) (forward-line -2)))
 (global-set-key (kbd "M-p") 'move-line-up)
 (global-set-key [M-up] 'move-line-up)
 
 (defun move-line-down ()
   (interactive)
-  (save-column
-    (forward-line 1)
-    (transpose-lines 1)
-    (forward-line -1)))
+  (save-column (forward-line 1) (transpose-lines 1) (forward-line -1)))
 (global-set-key (kbd "M-n") 'move-line-down)
 (global-set-key [M-down] 'move-line-down)
 
-(defun kill-current-buffer ()
-   (interactive)
-   (kill-buffer (current-buffer)))
+(defun kill-current-buffer () (interactive) (kill-buffer (current-buffer)))
 (global-set-key (kbd "C-x k") 'kill-current-buffer)
 
 (defun kill-all-buffers () (interactive) (mapc 'kill-buffer (buffer-list)))
@@ -282,7 +293,6 @@
   (Buffer-menu-this-window)
   (delete-other-windows)
   (kill-buffer (get-buffer "*Buffer List*")))
-
 (add-hook 'Buffer-menu-mode-hook
   (lambda ()
     (local-set-key (kbd "<mouse-1>") 'menu-this-window)))
@@ -291,28 +301,39 @@
   (lambda ()
     (setq tab-width 2)
     (local-set-key (kbd "<mouse-1>") 'compile-goto-error)
-    (local-set-key (kbd "<mouse-2>") (lambda () (interactive)
-      (if (eq (get-buffer "*ggtags-global*") (window-buffer (selected-window)))
-        (delete-window)
-        (delete-other-windows))
-      (bury-buffer (get-buffer "*ggtags-global*"))))
+    (local-set-key (kbd "<mouse-2>")
+      (lambda () (interactive)
+        (if (eq (get-buffer "*ggtags-global*") (window-buffer (selected-window)))
+          (delete-window)
+          (delete-other-windows))
+        (bury-buffer (get-buffer "*ggtags-global*"))))
     (local-set-key (kbd "<mouse-8>") 'next-error)
     (local-set-key (kbd "<mouse-9>") 'previous-error)))
 
-(defun execute-kbd-tab () (interactive) (execute-kbd-macro (kbd "TAB")))
-
 (add-hook 'completion-list-mode-hook
   (lambda ()
-    (local-set-key (kbd "<mouse-1>") (lambda () (interactive (progn (choose-completion) (execute-kbd-tab)))))
+    (local-set-key (kbd "<mouse-1>") (lambda () (interactive (progn (choose-completion) (execute-kbd-macro (kbd "TAB"))))))
     (local-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)))
 
-(defun mouse-8 ()
-  (interactive)
-  (if (get-buffer-window "*Buffer List*")
-    (progn (delete-other-windows) (kill-buffer (get-buffer "*Buffer List*")))
-    (if (get-buffer-window "*ggtags-global*")
-      (next-error)
-      (list-buffers))))
+(defun my-ggtags-mode()
+  (global-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
+  (local-set-key (kbd "<double-down-mouse-1>") (lambda ()(interactive)))
+  (local-set-key (kbd "<double-mouse-1>") 'ggtags-find-tag-dwim)
+  (local-set-key (kbd "<mouse-9>") (lambda () (interactive) (if (get-buffer-window "*ggtags-global*") (previous-error) (buffer-list-toggle))))
+  (local-set-key (kbd "<mouse-8>") (lambda () (interactive) (if (get-buffer-window "*ggtags-global*") (next-error) (switch-buffer-toggle))))
+  (local-set-key (kbd "M-n") (lambda () (interactive) (if (get-buffer-window "*ggtags-global*") (next-error) (move-line-down))))
+  (local-set-key (kbd "M-p") (lambda () (interactive) (if (get-buffer-window "*ggtags-global*") (previous-error) (move-line-up))))
+  (local-set-key (kbd "<mouse-2>")
+    (lambda () (interactive)
+      (if (get-buffer-window "*Completions*")
+        (keyboard-escape-quit)
+        (if (get-buffer "*ggtags-global*")
+          (ggtags-navigation-mode-abort)
+          (xref-pop-marker-stack)))))
+  (ggtags-mode)
+  (display-line-numbers-mode))
+
+(add-hook 'asm-mode-hook 'my-ggtags-mode)
 
 (add-hook 'c-mode-hook
   (lambda ()
@@ -334,38 +355,12 @@
       (backward-char 18))
     (global-set-key (kbd "C-c M-m") 'insert-main)
 
-    (local-set-key (kbd "<double-down-mouse-1>") (lambda ()(interactive)))
-    (local-set-key (kbd "<double-mouse-1>") 'ggtags-find-tag-dwim)
-    (local-set-key (kbd "<mouse-9>") (lambda () (interactive) (if (get-buffer-window "*ggtags-global*") (previous-error) (switch-buffer-toggle))))
-    (local-set-key (kbd "M-n") (lambda () (interactive) (if (get-buffer-window "*ggtags-global*") (next-error) (move-line-down))))
-    (local-set-key (kbd "M-p") (lambda () (interactive) (if (get-buffer-window "*ggtags-global*") (previous-error) (move-line-up))))
-    (local-set-key (kbd "<mouse-2>") (lambda () (interactive)
-      (if (get-buffer-window "*Completions*")
-        (keyboard-escape-quit)
-	(if (get-buffer "*ggtags-global*")
-          (ggtags-navigation-mode-abort)
-          (xref-pop-marker-stack)))))
-    (global-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
-    (ggtags-mode)
-    (display-line-numbers-mode)))
+    (my-ggtags-mode)))
 
 (add-hook 'c-mode-hook
   (defun my-c-mode-hook ()
     (setcar (cdr (assoc "Class" imenu-generic-expression ))
       "^\\(template[    ]*<[^>]+>[  ]*\\)?\\(class\\|struct\\|union\\)[     ]+\\([[:alnum:]_]+\\(<[^>]+>\\)?\\)\\([     \n]\\|\\\\\n\\)*[:{]")))
-
-(defun translation-word ()
-  (interactive)
-  (let* ((default-directory "~/")
-        (str (shell-command-to-string (concat "transw " (thing-at-point 'word 'no-properties) " | head -40"))))
-    (setq message-origin-point-position (window-point))
-    (goto-char (window-start))
-    (let ((ow (window-right (selected-window))))
-       (if ow
-         (progn (setq message-origin-point-position-ow (window-point ow))
-           (set-window-point ow (window-start ow)))))
-    (message "%s" str)))
-(global-set-key (kbd "C-c w") 'translation-word)
 
 (defun my-put-file-path-on-clipboard ()
   (interactive)
@@ -409,9 +404,17 @@
         (setq xref-after-return-flag t)
         (my-ggtags-global-start (car ggtags-global-start-commands))))))
 
+(defun buffer-list-toggle ()
+  (interactive)
+  (if (get-buffer-window "*Buffer List*")
+    (progn (delete-other-windows) (kill-buffer (get-buffer "*Buffer List*")))
+    (list-buffers)))
+(global-set-key (kbd "<mouse-8>") 'buffer-list-toggle)
+
 (defun switch-buffer-toggle ()
   (interactive)
   (switch-to-buffer nil))
+(global-set-key (kbd "<mouse-9>") 'switch-buffer-toggle)
 
 (global-set-key (kbd "<f4>") 'switch-buffer-toggle)
 (global-set-key (kbd "<f5>") (lambda () (interactive) (buffer-disable-undo) (buffer-enable-undo) (message "reset-undo")))
@@ -425,8 +428,6 @@
 (global-set-key (kbd "C-M-l") (lambda () (interactive) (recenter-top-bottom -1)))
 (global-set-key (kbd "C-M-r") (lambda () (interactive) (move-to-window-line-top-bottom -1)))
 (global-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)
-(global-set-key (kbd "<mouse-8>") 'mouse-8)
-(global-set-key (kbd "<mouse-9>") 'switch-buffer-toggle)
 (global-set-key "\S-\M-p" "\C-u1\C-v")
 (global-set-key "\S-\M-n" "\C-u1\M-v")
 (global-set-key (kbd "<prior>") 'scroll-down-command)
