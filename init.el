@@ -51,7 +51,7 @@
 (setq-default enable-recursive-minibuffers t)
 (setq-default mode-line-format (list '(:eval (if (buffer-file-name) "%f" "%b")) " (%p %l %C)"))
 
-(add-to-list 'auto-mode-alist '("\\.S\\'" . c-mode))
+(add-to-list 'auto-mode-alist '("\\.S\\'" . fundamental-mode))
 (add-to-list 'auto-mode-alist '("\\Makefile\\'" . fundamental-mode))
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 (defalias 'yes-or-no-p 'y-or-n-p)
