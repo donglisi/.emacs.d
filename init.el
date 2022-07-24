@@ -289,6 +289,7 @@
 
 (add-hook 'ggtags-global-mode-hook
   (lambda ()
+    (setq tab-width 2)
     (local-set-key (kbd "<mouse-1>") 'compile-goto-error)
     (local-set-key (kbd "<mouse-2>") (lambda () (interactive)
       (if (eq (get-buffer "*ggtags-global*") (window-buffer (selected-window)))
