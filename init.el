@@ -373,7 +373,7 @@
     (when filename
       (with-temp-buffer (insert filename) (clipboard-kill-region (point-min) (point-max)))
       (message filename))))
-(global-set-key (kbd "<f6>") 'my-put-file-path-on-clipboard)
+(global-set-key (kbd "<f7>") 'my-put-file-path-on-clipboard)
 
 (defun my-put-file-name-on-clipboard ()
   (interactive)
@@ -381,7 +381,7 @@
     (when filename
       (with-temp-buffer (insert filename) (clipboard-kill-region (point-min) (point-max)))
       (message filename))))
-(global-set-key (kbd "<f7>") 'my-put-file-name-on-clipboard)
+(global-set-key (kbd "<f6>") 'my-put-file-name-on-clipboard)
 
 (setq ggtags-global-show-flag nil)
 (defun ggtags-global-restart ()
