@@ -309,7 +309,7 @@
 (defun mouse-8 ()
   (interactive)
   (if (get-buffer-window "*Buffer List*")
-    (delete-other-windows)
+    (progn (delete-other-windows) (kill-buffer (get-buffer "*Buffer List*")))
     (if (get-buffer-window "*ggtags-global*")
       (next-error)
       (list-buffers))))
