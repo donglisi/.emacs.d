@@ -209,12 +209,12 @@
   (minibuffer-with-setup-hook 'minibuffer-complete (call-interactively 'switch-to-buffer)))
 (global-set-key (kbd "C-x b") 'switch-buffer-completion)
 
-(defun search-selection ()
-  (interactive)
-  (region-active-p)
-  (kill-ring-save (region-beginning) (region-end))
-  (isearch-mode t nil nil nil)
-  (isearch-yank-pop))
+(defun search-selection (beg end)
+  (interactive "r")
+    (let ((selection (buffer-substring-no-properties beg end)))
+      (deactivate-mark)
+      (isearch-mode t nil nil nil)
+      (isearch-yank-string selection)))
 (global-set-key (kbd "<f3>") 'search-selection)
 
 (defun isearch-repeat-forward+ ()
@@ -434,6 +434,7 @@
   (if (get-buffer-window "*Buffer List*")
     (progn (delete-other-windows) (kill-buffer (get-buffer "*Buffer List*")))
     (list-buffers)))
+(global-set-key (kbd "<f2>") 'buffer-list-toggle)
 (global-set-key (kbd "<mouse-8>") 'buffer-list-toggle)
 
 (defun switch-buffer-toggle ()
@@ -443,6 +444,7 @@
 
 (global-set-key (kbd "<f4>") 'switch-buffer-toggle)
 (global-set-key (kbd "<f5>") (lambda () (interactive) (buffer-disable-undo) (buffer-enable-undo) (message "reset-undo")))
+(global-set-key (kbd "<f8>") 'replace-string)
 (global-set-key (kbd "<f9>") 'count-lines-page)
 (global-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
 (global-set-key (kbd "<home>") 'beginning-of-buffer)
