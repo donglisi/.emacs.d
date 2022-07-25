@@ -385,7 +385,6 @@
     (when (ring-empty-p ring)
       (user-error "Marker stack is empty"))
     (let ((marker (ring-remove ring 0)))
-      (setq ggtags-global-start-root (pop ggtags-global-start-roots))
       (setq ggtags-global-start-command (pop ggtags-global-start-commands))
       (switch-to-buffer (or (marker-buffer marker)
                             (user-error "The marked buffer has been deleted")))
@@ -403,7 +402,7 @@
         (setq ggtags-global-show-flag t)
         (my-ggtags-global-start (car ggtags-global-start-commands)))
       (if (and ggtags-global-start-command
-               (not (eq ggtags-global-start-command (car ggtags-global-start-commands))))
+            (not (string-equal ggtags-global-start-command (car ggtags-global-start-commands))))
         (my-ggtags-global-start ggtags-global-start-command)
         (message "not need ggtags-global-restart")))
     (message "cannot ggtags-global-restart")))
@@ -413,11 +412,15 @@
 (add-hook 'xref-after-return-hook
   (lambda ()
     (interactive)
-    (if (and (ggtags-current-project-root)
-          (string-equal (ggtags-current-project-root) (car ggtags-global-start-roots)))
+    (if (car ggtags-global-start-commands)
       (progn
         (setq xref-after-return-flag t)
         (my-ggtags-global-start (car ggtags-global-start-commands))))))
+
+(defun clear-ggtags-stack ()
+  (setq ggtags-global-start-commands (list ()))
+  (setq xref--marker-ring (make-ring xref-marker-ring-length)))
+(global-set-key (kbd "<f11>") 'clear-ggtags-stack)
 
 (defun buffer-list-toggle ()
   (interactive)
@@ -433,7 +436,7 @@
 
 (global-set-key (kbd "<f4>") 'switch-buffer-toggle)
 (global-set-key (kbd "<f5>") (lambda () (interactive) (buffer-disable-undo) (buffer-enable-undo) (message "reset-undo")))
-(global-set-key (kbd "<f11>") 'count-lines-page)
+(global-set-key (kbd "<f9>") 'count-lines-page)
 (global-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
 (global-set-key (kbd "<home>") 'beginning-of-buffer)
 (global-set-key (kbd "<end>") 'end-of-buffer)

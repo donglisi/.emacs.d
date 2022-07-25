@@ -912,12 +912,12 @@ blocking emacs."
 (setq ggtags-global-start-command nil)
 (setq ggtags-global-start-root nil)
 (setq ggtags-global-start-commands (list ()))
-(setq ggtags-global-start-roots (list ()))
 (defun ggtags-global-start (command &optional directory)
   (if (and (not ggtags-global-show-flag) (not xref-after-return-flag))
     (progn
+      (if (not (string-equal ggtags-global-start-root (ggtags-current-project-root)))
+         (clear-ggtags-stack))
       (push command ggtags-global-start-commands)
-      (push (ggtags-current-project-root) ggtags-global-start-roots)
       (setq ggtags-global-start-root (ggtags-current-project-root))
       (setq ggtags-global-start-command command)))
   (let* ((default-directory (or directory (ggtags-current-project-root)))
@@ -1497,9 +1497,7 @@ commands `next-error' and `previous-error'.
           (setq ggtags-global-start-marker nil))
      (if (zerop count)
          (if (and (not ggtags-global-show-flag) (not xref-after-return-flag))
-            (progn
-              (pop ggtags-global-start-roots)
-              (pop ggtags-global-start-commands))))
+            (pop ggtags-global-start-commands)))
      (cons (if (> exit-status 0)
                msg
              (format "found %d %s" count
