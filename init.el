@@ -89,7 +89,7 @@
   (interactive)
   (setq origin-point-position (window-point))
   (delete-ggtags-global-buffer)
-  (let ((default-directory (if (ggtags-current-project-root) (ggtags-current-project-root) "/home/d/linux")))
+  (let ((default-directory (if (and (buffer-file-name) (ggtags-current-project-root)) (ggtags-current-project-root) "/home/d/linux")))
     (goto-char (window-start))
     (fzf-find-file)))
 (global-set-key (kbd "C-x C-t") 'fzfk)
