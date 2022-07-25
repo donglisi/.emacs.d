@@ -241,29 +241,23 @@
     (unless hi-lock-mode (hi-lock-mode 1))
     (hi-lock-set-pattern regexp face)))
 
-(defun highlight-toggle ()
+(defun highlight-point-toggle ()
   (interactive)
   (let ((str (get-char-property (point) 'hi-lock-overlay-regexp)))
       (if str (hi-lock-unface-buffer str) (hi-lock-face-symbol-at-point))))
 
+(defun highlight-selection ()
+  (hi-lock-face-symbol-at-point2 (buffer-substring (region-beginning) (region-end)))
+  (deactivate-mark))
+
 (defun mouse-highlight-toggle (click)
   (interactive "e")
-  (if (region-active-p)
-    (progn
-      (hi-lock-face-symbol-at-point2 (buffer-substring (region-beginning) (region-end)))
-      (deactivate-mark))
-    (progn (mouse-set-point click) (highlight-toggle))))
+  (if (region-active-p) (highlight-selection) (progn (mouse-set-point click) (highlight-point-toggle))))
 (global-set-key (kbd "<mouse-3>") 'mouse-highlight-toggle)
 
-(defun highligt-selection (beg end)
-  (interactive "r")
-  (if (region-active-p)
-    (progn
-      (message (buffer-substring beg end))
-      (hi-lock-face-symbol-at-point2 (buffer-substring beg end))
-      (deactivate-mark))
-    (highlight-toggle)))
-(global-set-key (kbd "<f10>") 'highligt-selection)
+(defun highlight-toggle ()
+  (interactive (if (region-active-p) (highlight-selection) (highlight-point-toggle))))
+(global-set-key (kbd "<f10>") 'highlight-toggle)
 
 (global-set-key (kbd "<f1>") (lambda () (interactive) (unhighlight-regexp t)))
 
