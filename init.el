@@ -79,13 +79,16 @@
 (setq recentf-max-saved-items 100)
 (global-set-key (kbd "C-x C-h") 'recentf-open-files)
 
-(defun fzfk ()
-  (interactive)
-  (setq origin-point-position (window-point))
+(defun delete-ggtags-global-buffer ()
   (if (get-buffer "*ggtags-global*")
     (progn
       (if (get-buffer-window "*ggtags-global*") (delete-window))
-      (kill-buffer (get-buffer "*ggtags-global*"))))
+      (kill-buffer (get-buffer "*ggtags-global*")))))
+
+(defun fzfk ()
+  (interactive)
+  (setq origin-point-position (window-point))
+  (delete-ggtags-global-buffer)
   (let ((default-directory "/home/d/linux"))
     (goto-char (window-start))
     (fzf-find-file)))
@@ -398,9 +401,10 @@
   (if (and (ggtags-current-project-root)
         (string-equal (ggtags-current-project-root) ggtags-global-start-root))
      (if (and (get-buffer "*ggtags-global*") (not (get-buffer-window "*ggtags-global*")))
-      (progn
-        (setq ggtags-global-show-flag t)
-        (my-ggtags-global-start (car ggtags-global-start-commands)))
+      (if (car ggtags-global-start-commands)
+        (progn
+          (setq ggtags-global-show-flag t)
+          (my-ggtags-global-start (car ggtags-global-start-commands))))
       (if (and ggtags-global-start-command
             (not (string-equal ggtags-global-start-command (car ggtags-global-start-commands))))
         (my-ggtags-global-start ggtags-global-start-command)
@@ -421,6 +425,7 @@
   (interactive)
   (setq ggtags-global-start-commands (list ()))
   (setq xref--marker-ring (make-ring xref-marker-ring-length))
+  (delete-ggtags-global-buffer)
   (message "clear-ggtags-stack"))
 (global-set-key (kbd "<f11>") 'clear-ggtags-stack)
 
