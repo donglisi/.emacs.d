@@ -916,7 +916,9 @@ blocking emacs."
   (if (and (not ggtags-global-show-flag) (not xref-after-return-flag))
     (progn
       (if (not (string-equal ggtags-global-start-root (ggtags-current-project-root)))
-         (clear-ggtags-stack))
+         (progn
+           (setq ggtags-global-start-commands (list ()))
+           (setq xref--marker-ring (make-ring xref-marker-ring-length))))
       (push command ggtags-global-start-commands)
       (setq ggtags-global-start-root (ggtags-current-project-root))
       (setq ggtags-global-start-command command)))

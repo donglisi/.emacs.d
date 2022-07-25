@@ -418,8 +418,10 @@
         (my-ggtags-global-start (car ggtags-global-start-commands))))))
 
 (defun clear-ggtags-stack ()
+  (interactive)
   (setq ggtags-global-start-commands (list ()))
-  (setq xref--marker-ring (make-ring xref-marker-ring-length)))
+  (setq xref--marker-ring (make-ring xref-marker-ring-length))
+  (message "clear-ggtags-stack"))
 (global-set-key (kbd "<f11>") 'clear-ggtags-stack)
 
 (defun buffer-list-toggle ()
