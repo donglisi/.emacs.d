@@ -398,46 +398,42 @@
     (fzf-find-file)))
 (global-set-key (kbd "C-x C-t") 'fzfk)
 
-(setq origin-window nil)
 (setq origin-point-position nil)
-(setq origin-window-other nil)
 (setq origin-point-position-other nil)
 
-(defun save-point-position (w)
-  (let ((ow (if (window-left w) (window-left w) (window-right w))))
-    (setq origin-window w)
+(defun save-point-position (flag)
+  (let* ((l (window-list (selected-frame)))
+         (w (if flag (car l) (nth 1 l)))
+         (ow (if flag (nth 1 l) (nth 2 l))))
     (setq origin-point-position (window-point w))
     (set-window-point w (window-start w))
     (if ow
       (progn
-        (setq origin-window-other ow)
         (setq origin-point-position-other (window-point ow))
         (set-window-point ow (window-start ow))))))
 
-(defun goto-origin-point-position()
-  (if origin-window
-    (progn
-      (set-window-point origin-window origin-point-position)
-      (setq origin-window nil)
-      (setq origin-point-position nil)))
-  (if origin-window-other
-    (progn
-      (set-window-point origin-window-other origin-point-position-other)
-      (setq origin-window-other nil)
-      (setq origin-point-position-other nil))))
+(defun goto-origin-point-position (flag)
+  (let* ((l (window-list (selected-frame)))
+         (w (if flag (car l) (nth 1 l)))
+         (ow (if flag (nth 1 l) (nth 2 l))))
+    (if origin-point-position
+      (progn
+        (set-window-point w origin-point-position)
+        (setq origin-point-position nil)))
+    (if origin-point-position-other
+      (progn
+        (set-window-point ow origin-point-position-other)
+        (setq origin-point-position-other nil)))))
 
-(add-hook 'minibuffer-setup-hook
-  (lambda ()
-    (interactive)
-    (if (get-buffer-window "*Completions*") (save-point-position (minibuffer-selected-window)))))
-(add-hook 'minibuffer-exit-hook 'goto-origin-point-position)
-(add-hook 'echo-area-clear-hook 'goto-origin-point-position)
+(add-hook 'minibuffer-setup-hook (lambda () (if (get-buffer-window "*Completions*") (save-point-position nil))))
+(add-hook 'minibuffer-exit-hook (lambda () (goto-origin-point-position nil)))
+(add-hook 'echo-area-clear-hook (lambda () (goto-origin-point-position t)))
 
 (defun translation-word ()
   (interactive)
   (let* ((default-directory "~/")
          (str (shell-command-to-string (concat "transw " (thing-at-point 'word 'no-properties) " | head -40"))))
-    (save-point-position (selected-window))
+    (save-point-position t)
     (message "%s" str)))
 (global-set-key (kbd "C-c w") 'translation-word)
 
