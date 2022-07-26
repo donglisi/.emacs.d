@@ -1,10 +1,10 @@
-(load "~/.emacs.d/27.2/minibuffer.el")
-(load "~/.emacs.d/27.2/man.el")
-(load "~/.emacs.d/27.2/simple.el")
-(load "~/.emacs.d/27.2/compile.el")
-(load "~/.emacs.d/27.2/cc-mode.el")
-(load "~/.emacs.d/27.2/tramp-sh.el")
-(load "~/.emacs.d/27.2/buff-menu.el")
+(load "~/.emacs.d/28.1/minibuffer.el")
+(load "~/.emacs.d/28.1/man.el")
+(load "~/.emacs.d/28.1/simple.el")
+(load "~/.emacs.d/28.1/compile.el")
+(load "~/.emacs.d/28.1/cc-mode.el")
+(load "~/.emacs.d/28.1/tramp-sh.el")
+(load "~/.emacs.d/28.1/buff-menu.el")
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
