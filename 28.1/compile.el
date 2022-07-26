@@ -1160,7 +1160,7 @@ POS and RES.")
       ;; Place a `compilation-message' everywhere we change text-properties
       ;; so compilation--remove-properties can know what to remove.
       compilation-message ,(compilation--make-message nil 0 nil nil)
-      mouse-face nil
+      mouse-face highlight
       keymap compilation-button-map
       help-echo "mouse-2: visit destination directory")))
 
@@ -1411,7 +1411,7 @@ RULE is the name (symbol) of the rule used or nil if anonymous.
       compilation-message ,(compilation--make-message loc type end-loc rule)
       help-echo , nil
       keymap compilation-button-map
-      mouse-face nil)))
+      mouse-face highlight)))
 
 (defun compilation--put-prop (matchnum prop val)
   (when (and (integerp matchnum) (match-beginning matchnum))
@@ -2285,7 +2285,7 @@ Optional argument MINOR indicates this is called from
   ;; Note that compilation-next-error-function is for interfacing
   ;; with the next-error function in simple.el, and it's only
   ;; coincidentally named similarly to compilation-next-error.
-  (setq next-error-function 'my-compilation-next-error-function)
+  (setq next-error-function 'compilation-next-error-function)
   (setq-local comint-file-name-prefix
               (or (file-remote-p default-directory) ""))
   (setq-local compilation-locs
@@ -2425,6 +2425,8 @@ and runs `compilation-filter-hook'."
               (unless comint-inhibit-carriage-motion
                 (comint-carriage-motion (process-mark proc) (point)))
               (set-marker (process-mark proc) (point))
+              ;; Update the number of errors in compilation-mode-line-errors
+              (compilation--ensure-parse (point))
               ;; (setq-local compilation-buffer-modtime (current-time))
               (run-hooks 'compilation-filter-hook))
 	  (goto-char pos)
@@ -2595,11 +2597,6 @@ as a last resort."
   (if (and (compilation-buffer-internal-p) (not avoid-current))
       (current-buffer)
     (next-error-find-buffer avoid-current 'compilation-buffer-internal-p)))
-
-(defun my-compilation-next-error-function (n &optional reset)
-  (interactive "p")
-  (if (and (not ggtags-global-show-flag) (not xref-after-return-flag))
-    (compilation-next-error-function n reset)))
 
 ;;;###autoload
 (defun compilation-next-error-function (n &optional reset)
