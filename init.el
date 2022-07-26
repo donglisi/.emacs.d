@@ -96,52 +96,46 @@
 
 (setq origin-window nil)
 (setq origin-point-position nil)
-(setq origin-point-position-ow nil)
+(setq origin-window-other nil)
+(setq origin-point-position-other nil)
 
-(defun message-point-position ()
-  (setq origin-point-position (window-point))
-  (goto-char (window-start))
-  (let ((ow (window-right (selected-window))))
-     (if ow
-       (progn
-         (setq origin-point-position-ow (window-point ow))
-         (set-window-point ow (window-start ow))))))
+(defun set-point-position (w)
+  (let ((ow (if (window-left w) (window-left w) (window-right w))))
+    (setq origin-window w)
+    (setq origin-point-position (window-point w))
+    (set-window-point w (window-start w))
+    (if ow
+      (progn
+        (setq origin-window-other ow)
+        (setq origin-point-position-other (window-point ow))
+        (set-window-point ow (window-start ow))))))
 
 (defun my-set-window-point()
-  (if origin-point-position
+  (if origin-window
     (progn
-      (goto-char origin-point-position)
+      (set-window-point origin-window origin-point-position)
+      (setq origin-window nil)
       (setq origin-point-position nil)))
-  (if origin-point-position-ow
+  (if origin-window-other
     (progn
-      (set-window-point (window-right (selected-window)) origin-point-position-ow)
-      (setq origin-point-position-ow nil))))
+      (set-window-point origin-window-other origin-point-position-other)
+      (setq origin-window-other nil)
+      (setq origin-point-position-other nil))))
 
 (defun translation-word ()
   (interactive)
   (let* ((default-directory "~/")
          (str (shell-command-to-string (concat "transw " (thing-at-point 'word 'no-properties) " | head -40"))))
-    (message-point-position)
+    (set-point-position (selected-window))
     (message "%s" str)))
 (global-set-key (kbd "C-c w") 'translation-word)
 
 (add-hook 'minibuffer-setup-hook
   (lambda ()
     (interactive)
-    (if (get-buffer-window "*Completions*")
-      (let ((window (get-buffer-window (window-buffer (minibuffer-selected-window)))))
-        (setq origin-window window)
-        (setq origin-point-position (window-point window))
-        (set-window-point window (window-start window))))))
+    (if (get-buffer-window "*Completions*") (set-point-position (minibuffer-selected-window)))))
 
-(add-hook 'minibuffer-exit-hook
-  (lambda ()
-    (interactive)
-    (if origin-window
-      (progn
-        (set-window-point origin-window origin-point-position)
-        (setq origin-window nil)
-        (setq origin-point-position nil)))))
+(add-hook 'minibuffer-exit-hook 'my-set-window-point)
 
 (defun keyboard-escape-quit2 ()
   (interactive)
@@ -456,6 +450,7 @@
   (switch-to-buffer nil))
 (global-set-key (kbd "<mouse-9>") 'switch-buffer-toggle)
 
+(global-set-key (kbd "<f3>") 'string-rectangle)
 (global-set-key (kbd "<f4>") 'switch-buffer-toggle)
 (global-set-key (kbd "<f5>") (lambda () (interactive) (buffer-disable-undo) (buffer-enable-undo) (message "reset-undo")))
 (global-set-key (kbd "<f8>") 'replace-string)

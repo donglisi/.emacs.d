@@ -164,6 +164,7 @@ configuration.")
         (jump-to-register fzf/window-register)
         (message (format "FZF exited with code %s" exit-code))
         (goto-char origin-point-position)
+        (setq origin-point-position nil)
       )
     )
 
@@ -318,7 +319,7 @@ to start in."
                (lambda (x)
                  (let ((f (expand-file-name x d)))
                    (when (file-exists-p f)
-                     (progn (goto-char origin-point-position) (find-file f))))))
+                     (progn (goto-char origin-point-position) (setq origin-point-position nil) (find-file f))))))
   )
 )
 
