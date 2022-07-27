@@ -217,7 +217,7 @@
       (goto-char (region-end))
       (isearch-mode t)
       (isearch-yank-string selection))
-    (isearch-forward)))
+    (isearch-forward nil t)))
 (define-key global-map "\C-s" 'isearch-forward+)
 
 (defun isearch-backward+ ()
@@ -228,7 +228,7 @@
       (goto-char (- (region-end) 1))
       (isearch-mode nil)
       (isearch-yank-string selection))
-    (isearch-backward)))
+    (isearch-backward nil t)))
 (define-key global-map "\C-r" 'isearch-backward+)
 
 (defun isearch-repeat-forward+ ()
