@@ -167,8 +167,6 @@
   (let ((inhibit-message t) (default-directory (if (buffer-file-name) default-directory "~/")))
     (minibuffer-with-setup-hook 'find-file-set-key (call-interactively 'find-file))))
 (global-set-key (kbd "C-x C-f") 'find-file-current)
-(global-set-key (kbd "<mouse-6>") (lambda () (interactive)
-  (if (get-buffer-window "*Completions*") (minibuffer-path-up) (find-file-current))))
 
 (defun find-file-home ()
   (interactive)
@@ -185,8 +183,13 @@
   (interactive)
   (minibuffer-with-setup-hook 'minibuffer-completion-help (call-interactively 'imenu)))
 (global-set-key (kbd "M-i") 'imenu-completion)
-(global-set-key (kbd "<mouse-7>") (lambda () (interactive)
-  (if (get-buffer-window "*Completions*") (minibuffer-path-origin) (imenu-completion))))
+
+(add-hook 'emacs-startup-hook
+  (lambda ()
+    (global-set-key (kbd "<mouse-6>") (lambda () (interactive)
+      (if (get-buffer-window "*Completions*") (minibuffer-path-up) (find-file-current))))
+    (global-set-key (kbd "<mouse-7>") (lambda () (interactive)
+      (if (get-buffer-window "*Completions*") (minibuffer-path-origin) (imenu-completion))))))
 
 (defun switch-buffer-completion ()
   (interactive)
