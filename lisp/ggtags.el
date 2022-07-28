@@ -1505,6 +1505,8 @@ commands `next-error' and `previous-error'.
              (pop ggtags-global-start-commands)
              (setq ggtags-global-start-command (car ggtags-global-start-commands)))))
        (setq xref-last-zero-flag nil))
+     (setq xref-last-is-one xref-curr-is-one)
+     (if (= count 1) (setq xref-curr-is-one t) (setq xref-curr-is-one nil))
      (cons (if (> exit-status 0)
                msg
              (format "found %d %s" count

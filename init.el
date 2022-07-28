@@ -337,6 +337,8 @@
 
 (setq xref-after-return-flag nil)
 (setq xref-last-zero-flag nil)
+(setq xref-last-is-one nil)
+(setq xref-curr-is-one nil)
 (defun xref-pop-marker-stack ()
   (interactive)
   (if xref-last-zero-flag
@@ -350,7 +352,7 @@
                             (user-error "The marked buffer has been deleted")))
       (goto-char (marker-position marker))
       (set-marker marker nil nil)
-      (if (car ggtags-global-start-commands)
+      (if (and (or xref-last-zero-flag (not xref-last-is-one)) (car ggtags-global-start-commands))
         (progn
           (setq xref-after-return-flag t)
           (my-ggtags-global-start (car ggtags-global-start-commands)))))))
