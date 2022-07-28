@@ -340,9 +340,7 @@
 (defun xref-pop-marker-stack ()
   (interactive)
   (if xref-last-zero-flag
-    (progn
-      (ring-insert xref--marker-ring (point-marker))
-      (setq xref-last-zero-flag nil))
+    (ring-insert xref--marker-ring (point-marker))
     (setq ggtags-global-start-command (pop ggtags-global-start-commands)))
   (let ((ring xref--marker-ring))
     (when (ring-empty-p ring)

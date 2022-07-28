@@ -2598,7 +2598,7 @@ as a last resort."
 
 (defun my-compilation-next-error-function (n &optional reset)
   (interactive "p")
-  (if (and (not ggtags-global-show-flag) (not xref-after-return-flag))
+  (if (or xref-last-zero-flag (and (not ggtags-global-show-flag) (not xref-after-return-flag)))
     (compilation-next-error-function n reset)))
 
 ;;;###autoload

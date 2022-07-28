@@ -1498,11 +1498,13 @@ commands `next-error' and `previous-error'.
           (not ggtags-global-continuation)
           (setq ggtags-global-start-marker nil))
      (if (zerop count)
+       (progn
+         (setq xref-last-zero-flag t)
          (if (and (not ggtags-global-show-flag) (not xref-after-return-flag))
-            (progn
-              (pop ggtags-global-start-commands)
-              (setq ggtags-global-start-command (car ggtags-global-start-commands))
-              (setq xref-last-zero-flag t))))
+           (progn
+             (pop ggtags-global-start-commands)
+             (setq ggtags-global-start-command (car ggtags-global-start-commands)))))
+       (setq xref-last-zero-flag nil))
      (cons (if (> exit-status 0)
                msg
              (format "found %d %s" count
