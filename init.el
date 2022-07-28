@@ -41,6 +41,7 @@
 (setq scroll-step 1)
 (setq lazy-highlight-cleanup t)
 
+(setq-default frame-title-format '("emacs"))
 (setq-default mouse-1-click-follows-link nil)
 (setq-default enable-recursive-minibuffers t)
 (setq-default mode-line-format (list '(:eval (if (buffer-file-name) "%f" "%b")) " (%p %l %C)"))
@@ -334,18 +335,27 @@
     (setcar (cdr (assoc "Class" imenu-generic-expression ))
       "^\\(template[    ]*<[^>]+>[  ]*\\)?\\(class\\|struct\\|union\\)[     ]+\\([[:alnum:]_]+\\(<[^>]+>\\)?\\)\\([     \n]\\|\\\\\n\\)*[:{]")))
 
+(setq xref-after-return-flag nil)
+(setq xref-last-zero-flag nil)
 (defun xref-pop-marker-stack ()
   (interactive)
+  (if xref-last-zero-flag
+    (progn
+      (ring-insert xref--marker-ring (point-marker))
+      (setq xref-last-zero-flag nil))
+    (setq ggtags-global-start-command (pop ggtags-global-start-commands)))
   (let ((ring xref--marker-ring))
     (when (ring-empty-p ring)
       (user-error "Marker stack is empty"))
     (let ((marker (ring-remove ring 0)))
-      (setq ggtags-global-start-command (pop ggtags-global-start-commands))
       (switch-to-buffer (or (marker-buffer marker)
                             (user-error "The marked buffer has been deleted")))
       (goto-char (marker-position marker))
       (set-marker marker nil nil)
-      (run-hooks 'xref-after-return-hook))))
+      (if (car ggtags-global-start-commands)
+        (progn
+          (setq xref-after-return-flag t)
+          (my-ggtags-global-start (car ggtags-global-start-commands)))))))
 
 (setq ggtags-global-show-flag nil)
 (defun ggtags-global-restart ()
@@ -363,15 +373,6 @@
         (message "not need ggtags-global-restart")))
     (message "cannot ggtags-global-restart")))
 (global-set-key (kbd "<f12>") 'ggtags-global-restart)
-
-(setq xref-after-return-flag nil)
-(add-hook 'xref-after-return-hook
-  (lambda ()
-    (interactive)
-    (if (car ggtags-global-start-commands)
-      (progn
-        (setq xref-after-return-flag t)
-        (my-ggtags-global-start (car ggtags-global-start-commands))))))
 
 (defun delete-ggtags-global-buffer ()
   (if (get-buffer "*ggtags-global*")
