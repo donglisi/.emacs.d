@@ -331,15 +331,15 @@
       "^\\(template[    ]*<[^>]+>[  ]*\\)?\\(class\\|struct\\|union\\)[     ]+\\([[:alnum:]_]+\\(<[^>]+>\\)?\\)\\([     \n]\\|\\\\\n\\)*[:{]")))
 
 (setq xref-after-return-flag nil)
-(setq xref-last-zero-flag nil)
+(setq xref-last-is-zero nil)
+(setq xref-prev-is-one nil)
 (setq xref-last-is-one nil)
-(setq xref-curr-is-one nil)
 (defun xref-pop-marker-stack ()
   (interactive)
   (let ((ring xref--marker-ring))
     (when (ring-empty-p ring)
       (user-error "Marker stack is empty"))
-    (if xref-last-zero-flag
+    (if xref-last-is-zero
       (ring-insert xref--marker-ring (point-marker))
       (setq ggtags-global-start-command (pop ggtags-global-start-commands)))
     (let ((marker (ring-remove ring 0)))
@@ -347,7 +347,7 @@
                             (user-error "The marked buffer has been deleted")))
       (goto-char (marker-position marker))
       (set-marker marker nil nil))
-    (if (and (or xref-last-zero-flag (not xref-last-is-one)) (car ggtags-global-start-commands))
+    (if (and (or xref-last-is-zero (not xref-prev-is-one)) (car ggtags-global-start-commands))
       (progn
         (setq xref-after-return-flag t)
         (my-ggtags-global-start (car ggtags-global-start-commands))))))

@@ -1499,14 +1499,14 @@ commands `next-error' and `previous-error'.
           (setq ggtags-global-start-marker nil))
      (if (zerop count)
        (progn
-         (setq xref-last-zero-flag t)
+         (setq xref-last-is-zero t)
          (if (and (not ggtags-global-show-flag) (not xref-after-return-flag))
            (progn
              (pop ggtags-global-start-commands)
              (setq ggtags-global-start-command (car ggtags-global-start-commands)))))
-       (setq xref-last-zero-flag nil))
-     (setq xref-last-is-one xref-curr-is-one)
-     (if (= count 1) (setq xref-curr-is-one t) (setq xref-curr-is-one nil))
+       (setq xref-last-is-zero nil))
+     (setq xref-prev-is-one xref-last-is-one)
+     (if (= count 1) (setq xref-last-is-one t) (setq xref-last-is-one nil))
      (cons (if (> exit-status 0)
                msg
              (format "found %d %s" count
