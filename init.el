@@ -5,6 +5,7 @@
 (load "~/.emacs.d/28.1/cc-mode.el")
 (load "~/.emacs.d/28.1/tramp-sh.el")
 (load "~/.emacs.d/28.1/buff-menu.el")
+(load "~/.emacs.d/28.1/hi-lock.el")
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
@@ -250,15 +251,6 @@
   (unless isearch-success
     (isearch-repeat-backward)))
 (define-key isearch-mode-map (kbd "C-r") 'isearch-repeat-backward+)
-
-(defun hi-lock-face-symbol-at-point2 (regexp1)
-  (interactive)
-  (let* ((regexp regexp1)
-	 (hi-lock-auto-select-face t)
-	 (face (hi-lock-read-face-name)))
-    (or (facep face) (setq face 'hi-yellow))
-    (unless hi-lock-mode (hi-lock-mode 1))
-    (hi-lock-set-pattern regexp face)))
 
 (defun highlight-point-toggle ()
   (interactive)
