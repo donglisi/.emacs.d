@@ -8312,13 +8312,7 @@ non-nil."
 		      (if (eq buffer (window-buffer window))
 			  (set-window-hscroll window 0)))
 		    nil t)))
-  (message "Truncate long lines %s%s"
-	   (if truncate-lines "enabled" "disabled")
-           (if (and truncate-lines visual-line-mode)
-               (progn
-                 (visual-line-mode -1)
-                 (format-message " and `visual-line-mode' disabled"))
-             "")))
+  )
 
 (defun toggle-word-wrap (&optional arg)
   "Toggle whether to use word-wrapping for continuation lines.

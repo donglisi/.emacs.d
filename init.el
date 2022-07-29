@@ -29,6 +29,7 @@
 (delete-selection-mode)
 (recentf-mode)
 
+(setq show-help-function nil)
 (setq inhibit-startup-screen t)
 (setq auto-save-list-file-prefix nil)
 (setq lazy-highlight-initial-delay 0)
