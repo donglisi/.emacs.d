@@ -909,19 +909,13 @@ blocking emacs."
     (xref-push-marker-stack ggtags-global-start-marker)
     (setq ggtags-global-start-marker t)))
 
-(setq ggtags-global-start-command nil)
-(setq ggtags-global-start-root nil)
-(setq ggtags-global-start-commands (list ()))
 (defun ggtags-global-start (command &optional directory)
-  (if (and (not ggtags-global-show-flag) (not xref-after-return-flag))
+  (if (and (not ggtags-global-rerun-flag) (not xref-after-return-flag))
     (progn
       (if (not (string-equal ggtags-global-start-root (ggtags-current-project-root)))
-         (progn
-           (setq ggtags-global-start-commands (list ()))
-           (setq xref--marker-ring (make-ring xref-marker-ring-length))))
-      (push command ggtags-global-start-commands)
+        (clear-ggtags-stack t))
       (setq ggtags-global-start-root (ggtags-current-project-root))
-      (setq ggtags-global-start-command command)))
+      (push command ggtags-global-start-commands)))
   (let* ((default-directory (or directory (ggtags-current-project-root)))
          (split-window-preferred-function ggtags-split-window-function)
          (env ggtags-process-environment))
@@ -1497,16 +1491,10 @@ commands `next-error' and `previous-error'.
           (markerp ggtags-global-start-marker)
           (not ggtags-global-continuation)
           (setq ggtags-global-start-marker nil))
-     (if (zerop count)
-       (progn
-         (setq xref-last-is-zero t)
-         (if (and (not ggtags-global-show-flag) (not xref-after-return-flag))
-           (progn
-             (pop ggtags-global-start-commands)
-             (setq ggtags-global-start-command (car ggtags-global-start-commands)))))
-       (setq xref-last-is-zero nil))
-     (setq xref-prev-is-one xref-last-is-one)
-     (if (= count 1) (setq xref-last-is-one t) (setq xref-last-is-one nil))
+     (if (and (not ggtags-global-rerun-flag) (not xref-after-return-flag))
+       (if (zerop count)
+         (pop ggtags-global-start-commands)
+         (push count ggtags-global-result-counts)))
      (cons (if (> exit-status 0)
                msg
              (format "found %d %s" count
@@ -1670,10 +1658,10 @@ ggtags: history match invalid, jump to first match instead")
         (timer (timer-event-handler timer)))
       (ggtags-navigation-mode -1)
       (ggtags-navigation-mode-cleanup buf t))))
-  (if ggtags-global-show-flag
+  (if ggtags-global-rerun-flag
     (progn
       (ring-remove xref--marker-ring 0)
-      (setq ggtags-global-show-flag nil)))
+      (setq ggtags-global-rerun-flag nil)))
   (if xref-after-return-flag
     (progn
       (ring-remove xref--marker-ring 0)
