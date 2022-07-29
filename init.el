@@ -299,6 +299,7 @@
           (ggtags-navigation-mode-abort)
           (xref-pop-marker-stack)))))
   (ggtags-mode)
+  (toggle-truncate-lines)
   (display-line-numbers-mode))
 
 (add-hook 'asm-mode-hook 'my-ggtags-mode)
