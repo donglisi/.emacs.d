@@ -463,6 +463,7 @@
  '(Buffer-menu-size-width 6)
  '(display-line-numbers-width 4)
  '(enable-local-variables nil)
+ '(ggtags-global-abbreviate-filename 200)
  '(hi-lock-file-patterns-policy 'never)
  '(hi-lock-highlight-range 2000000)
  '(imenu-use-popup-menu nil)
