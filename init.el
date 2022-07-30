@@ -61,9 +61,9 @@
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (global-set-key (kbd "<f1>") (lambda () (interactive) (unhighlight-regexp t)))
-(global-set-key (kbd "<f3>") 'string-rectangle)
+(global-set-key (kbd "<f3>") 'recentf-open-files)
 (global-set-key (kbd "<f5>") (lambda () (interactive) (buffer-disable-undo) (buffer-enable-undo) (message "reset-undo")))
-(global-set-key (kbd "<f8>") 'replace-string)
+(global-set-key (kbd "<f8>") (lambda () (interactive) (bury-buffer (current-buffer)) (switch-buffer-toggle)))
 (global-set-key (kbd "<f9>") 'count-lines-page)
 (global-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
 (global-set-key (kbd "<home>") 'beginning-of-buffer)
@@ -205,7 +205,8 @@
   (kill-buffer (get-buffer "*Buffer List*")))
 (add-hook 'Buffer-menu-mode-hook
   (lambda ()
-    (local-set-key (kbd "<mouse-1>") 'menu-this-window)))
+    (local-set-key (kbd "<mouse-1>") 'menu-this-window)
+    (local-set-key (kbd "<mouse-2>") 'delete-window)))
 
 (defun buffer-list-toggle ()
   (interactive)
