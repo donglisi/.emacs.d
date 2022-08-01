@@ -61,9 +61,18 @@
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (global-set-key (kbd "<f1>") (lambda () (interactive) (unhighlight-regexp t)))
-(global-set-key (kbd "<f3>") 'recentf-open-files)
-(global-set-key (kbd "<f5>") (lambda () (interactive) (buffer-disable-undo) (buffer-enable-undo) (message "reset-undo")))
-(global-set-key (kbd "<f8>") (lambda () (interactive) (bury-buffer (current-buffer)) (switch-buffer-toggle)))
+(global-set-key (kbd "<f6>") 'recentf-open-files)
+(global-set-key (kbd "<f5>")
+  (lambda ()
+    (interactive)
+    (buffer-disable-undo)
+    (buffer-enable-undo)
+    (if (kill-current-buffer)
+      (progn
+        (reopen-killed-file)
+        (message "reset buffer"))
+      (message "reset buffer cancel"))))
+(global-set-key (kbd "<f2>") (lambda () (interactive) (bury-buffer (current-buffer)) (switch-buffer-toggle)))
 (global-set-key (kbd "<f9>") 'count-lines-page)
 (global-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
 (global-set-key (kbd "<home>") 'beginning-of-buffer)
@@ -214,7 +223,7 @@
     (progn (delete-other-windows) (kill-buffer (get-buffer "*Buffer List*")))
     (list-buffers)))
 (global-set-key (kbd "<mouse-8>") 'buffer-list-toggle)
-(global-set-key (kbd "<f2>") 'buffer-list-toggle)
+(global-set-key (kbd "<f3>") 'buffer-list-toggle)
 
 (defun isearch-wrapper (flag)
   (interactive)
@@ -444,7 +453,7 @@
     (when filename
       (with-temp-buffer (insert filename) (clipboard-kill-region (point-min) (point-max)))
       (message filename))))
-(global-set-key (kbd "<f6>") 'my-put-file-name-on-clipboard)
+(global-set-key (kbd "<f8>") 'my-put-file-name-on-clipboard)
 
 (customize-set-variable 'search-whitespace-regexp nil)
 (custom-set-faces
