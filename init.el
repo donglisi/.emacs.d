@@ -61,7 +61,7 @@
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (global-set-key (kbd "<f1>") (lambda () (interactive) (unhighlight-regexp t)))
-(global-set-key (kbd "<f6>") 'recentf-open-files)
+(global-set-key (kbd "<f2>") 'recentf-open-files)
 (global-set-key (kbd "<f5>")
   (lambda ()
     (interactive)
@@ -72,7 +72,7 @@
         (reopen-killed-file)
         (message "reset buffer"))
       (message "reset buffer cancel"))))
-(global-set-key (kbd "<f2>") (lambda () (interactive) (bury-buffer (current-buffer)) (switch-buffer-toggle)))
+(global-set-key (kbd "<f6>") (lambda () (interactive) (bury-buffer (current-buffer)) (switch-buffer-toggle)))
 (global-set-key (kbd "<f9>") 'count-lines-page)
 (global-set-key (kbd "TAB") (lambda () (interactive) (insert "\t")))
 (global-set-key (kbd "<home>") 'beginning-of-buffer)
@@ -215,6 +215,7 @@
 (add-hook 'Buffer-menu-mode-hook
   (lambda ()
     (local-set-key (kbd "<mouse-1>") 'menu-this-window)
+    (local-set-key (kbd "<return>") 'menu-this-window)
     (local-set-key (kbd "<mouse-2>") 'delete-window)))
 
 (defun buffer-list-toggle ()
@@ -372,7 +373,7 @@
       (setq ggtags-global-rerun-flag t)
       (my-ggtags-global-start (car ggtags-global-start-commands)))
     (message "cannot ggtags-global-rerun")))
-(global-set-key (kbd "<f12>") 'ggtags-global-rerun)
+(global-set-key (kbd "<f11>") 'ggtags-global-rerun)
 
 (defun delete-ggtags-global-buffer ()
   (if (get-buffer "*ggtags-global*")
@@ -389,7 +390,7 @@
     (progn
       (delete-ggtags-global-buffer)
       (message "clear-ggtags-stack"))))
-(global-set-key (kbd "<f11>") 'clear-ggtags-stack)
+(global-set-key (kbd "<f12>") 'clear-ggtags-stack)
 
 (defun fzfk ()
   (interactive)
@@ -471,7 +472,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(Buffer-menu-mode-width 4)
- '(Buffer-menu-name-width 22)
+ '(Buffer-menu-name-width 26)
  '(Buffer-menu-size-width 6)
  '(display-line-numbers-width 4)
  '(ggtags-global-abbreviate-filename 200)
