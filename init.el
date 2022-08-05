@@ -8,6 +8,7 @@
 (load "~/.emacs.d/28.1/hi-lock.el")
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
+(load "~/.emacs.d/lisp/wo-ctrl-c.el")
 
 (require 'fzf)
 (require 'anzu)
@@ -347,6 +348,7 @@
 (setq ggtags-global-start-commands (list ()))
 (setq ggtags-global-result-counts (list ()))
 (setq xref-after-return-flag nil)
+(setq use-xref-after-return-flag nil)
 (defun xref-pop-marker-stack ()
   (interactive)
   (let ((ring xref--marker-ring))
@@ -359,10 +361,11 @@
                             (user-error "The marked buffer has been deleted")))
       (goto-char (marker-position marker))
       (set-marker marker nil nil))
-    (if (and (car ggtags-global-start-commands) (> (car ggtags-global-result-counts) 1))
-      (progn
-        (setq xref-after-return-flag t)
-        (my-ggtags-global-start (car ggtags-global-start-commands))))))
+    (if use-xref-after-return-flag
+      (if (and (car ggtags-global-start-commands) (> (car ggtags-global-result-counts) 1))
+        (progn
+          (setq xref-after-return-flag t)
+          (my-ggtags-global-start (car ggtags-global-start-commands)))))))
 
 (setq ggtags-global-rerun-flag nil)
 (defun ggtags-global-rerun ()
