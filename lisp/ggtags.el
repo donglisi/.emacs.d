@@ -1740,7 +1740,7 @@ ggtags: history match invalid, jump to first match instead")
         (ggtags-ensure-global-buffer (kill-compilation))))
     (define-key map "\M-o" 'ggtags-navigation-visible-mode)
 ;;    (define-key map [return] 'ggtags-navigation-mode-done)
-    (define-key map "\r" 'ggtags-navigation-mode-done)
+;;    (define-key map "\r" 'ggtags-navigation-mode-done)
     (define-key map [remap xref-pop-marker-stack] 'ggtags-navigation-mode-abort)
     map))
 
