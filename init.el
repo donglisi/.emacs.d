@@ -30,6 +30,7 @@
 (delete-selection-mode)
 (recentf-mode)
 
+(setq ring-bell-function 'ignore)
 (setq show-help-function nil)
 (setq inhibit-startup-screen t)
 (setq auto-save-list-file-prefix nil)
