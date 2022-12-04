@@ -48,7 +48,6 @@
 (setq-default frame-title-format '("emacs"))
 (setq-default mouse-1-click-follows-link nil)
 (setq-default enable-recursive-minibuffers t)
-(setq-default mode-line-format (list '(:eval (if (buffer-file-name) "%f" "%b")) " (%p %l %C)"))
 
 (add-to-list 'auto-mode-alist '("\\Makefile\\'" . fundamental-mode))
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
@@ -63,6 +62,7 @@
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (global-set-key (kbd "<f1>") (lambda () (interactive) (unhighlight-regexp t)))
+(global-set-key (kbd "C-x m") 'compile)
 (global-set-key (kbd "<f2>") 'buffer-list-toggle)
 (global-set-key (kbd "<f5>")
   (lambda ()
@@ -439,7 +439,7 @@
 (defun translation-word ()
   (interactive)
   (let* ((default-directory "~/")
-         (str (shell-command-to-string (concat "transw " (thing-at-point 'word 'no-properties) " | head -40"))))
+         (str (shell-command-to-string (concat "trans-wrapper " (thing-at-point 'word 'no-properties) " | head -40"))))
     (save-point-position t)
     (message "%s" str)))
 (global-set-key (kbd "C-c w") 'translation-word)
@@ -496,3 +496,23 @@
  '(use-dialog-box nil)
  '(warning-suppress-types '((comp)))
  '(xref-marker-ring-length 1000))
+
+(defvar my-mode-line-buffer-line-count nil)
+(make-variable-buffer-local 'my-mode-line-buffer-line-count)
+
+(setq-default mode-line-format
+  (list
+    '(:eval (if (buffer-file-name) "%f" "%b"))
+    " (%p %l %C) "
+    '(:eval
+        (when line-number-mode
+          (when (and (not (buffer-modified-p)) my-mode-line-buffer-line-count)
+            my-mode-line-buffer-line-count)))))
+
+(defun my-mode-line-count-lines ()
+  (setq my-mode-line-buffer-line-count (int-to-string (count-lines (point-min) (point-max)))))
+
+(add-hook 'find-file-hook 'my-mode-line-count-lines)
+(add-hook 'after-save-hook 'my-mode-line-count-lines)
+(add-hook 'after-revert-hook 'my-mode-line-count-lines)
+(add-hook 'dired-after-readin-hook 'my-mode-line-count-lines)
