@@ -881,6 +881,8 @@ blocking emacs."
                                (ggtags-project-has-path-style (ggtags-find-project))
                                "--path-style=shorter")
                           (and ggtags-global-treat-text "--other")
+                          (if ggtags-local-grep (and "-S"))
+                          (if ggtags-local-grep (and "/a/source/linux/drivers/pci/"))
                           (pcase cmd
                             ((pred stringp) cmd)
                             (`definition nil) ;-d not supported by Global 5.7.1
@@ -2083,8 +2085,9 @@ When finished invoke CALLBACK in BUFFER with process exit status."
     (define-key m "g" 'ggtags-grep)
     (define-key m "d" 'ggtags-definition)
     (define-key m "a" 'ggtags-all)
+    (define-key m "l" 'ggtags-local)
     (define-key m "r" 'ggtags-reference)
-    (define-key m "." 'ggtags-find-tag-dwim2)
+    (define-key m "." 'ggtags-find-tag-dwim)
     (define-key m "\M-i" 'ggtags-idutils-query)
     (define-key m "\M-b" 'ggtags-browse-file-as-hypertext)
     (define-key m "\M-h" 'ggtags-view-tag-history)
@@ -2393,6 +2396,17 @@ Invert the match when called with a prefix arg \\[universal-argument]."
   (ggtags-find-tag 'all (and invert-match "--invert-match")
                    "--" (ggtags-quote-pattern pattern)))
 
+(setq ggtags-local-grep nil)
+(defun ggtags-local (pattern &optional invert-match)
+  (interactive (list (ggtags-read-tag 'definition 'confirm
+                                      (if current-prefix-arg
+                                          "Inverted grep pattern" "Grep pattern"))
+                     current-prefix-arg))
+  (setq ggtags-local-grep t)
+  (ggtags-find-tag 'all (and invert-match "--invert-match")
+                   "--" (ggtags-quote-pattern pattern))
+  (setq ggtags-local-grep nil))
+
 (defun ggtags-reference (pattern &optional invert-match)
   (interactive (list (ggtags-read-tag 'definition 'confirm
                                       (if current-prefix-arg
@@ -2404,26 +2418,6 @@ Invert the match when called with a prefix arg \\[universal-argument]."
 (defun my-ggtags-global-start (cmd)
   (ggtags-check-project)
   (ggtags-global-start cmd))
-
-(defun ggtags-find-tag-dwim2 (name &optional what)
-  (interactive
-   (let ((include (and (not current-prefix-arg) (ggtags-include-file))))
-     (ggtags-ensure-project)
-     (if include (list include 'include)
-       (list (ggtags-read-tag 'definition current-prefix-arg)
-             (and current-prefix-arg 'definition)))))
-  (ggtags-check-project)    ; For `ggtags-current-project-root' below.
-  (cond
-   ((eq what 'include)
-    (ggtags-find-file name))
-   ((or (eq what 'definition)
-        (not buffer-file-name)
-        (not (ggtags-project-has-refs (ggtags-find-project)))
-        (not (ggtags-project-file-p buffer-file-name)))
-    (ggtags-find-definition name))
-   (t (ggtags-find-tag
-       "-all"
-       "--" (shell-quote-argument name)))))
 
 (provide 'ggtags)
 ;;; ggtags.el ends here
