@@ -882,7 +882,8 @@ blocking emacs."
                                "--path-style=shorter")
                           (and ggtags-global-treat-text "--other")
                           (if ggtags-local-grep (and "-S"))
-                          (if ggtags-local-grep (and "/a/source/linux/drivers/pci/"))
+                          (if ggtags-local-grep (and default-directory))
+                          (setq ggtags-local-grep nil)
                           (pcase cmd
                             ((pred stringp) cmd)
                             (`definition nil) ;-d not supported by Global 5.7.1
@@ -2397,15 +2398,9 @@ Invert the match when called with a prefix arg \\[universal-argument]."
                    "--" (ggtags-quote-pattern pattern)))
 
 (setq ggtags-local-grep nil)
-(defun ggtags-local (pattern &optional invert-match)
-  (interactive (list (ggtags-read-tag 'definition 'confirm
-                                      (if current-prefix-arg
-                                          "Inverted grep pattern" "Grep pattern"))
-                     current-prefix-arg))
-  (setq ggtags-local-grep t)
-  (ggtags-find-tag 'all (and invert-match "--invert-match")
-                   "--" (ggtags-quote-pattern pattern))
-  (setq ggtags-local-grep nil))
+(defun ggtags-local ()
+  (interactive)
+  (setq ggtags-local-grep t))
 
 (defun ggtags-reference (pattern &optional invert-match)
   (interactive (list (ggtags-read-tag 'definition 'confirm
