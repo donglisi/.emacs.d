@@ -271,17 +271,14 @@
   (let ((str (get-char-property (point) 'hi-lock-overlay-regexp)))
       (if str (hi-lock-unface-buffer str) (hi-lock-face-symbol-at-point))))
 
-(defun highlight-selection ()
-  (hi-lock-face-symbol-at-point2 (buffer-substring (region-beginning) (region-end)))
-  (deactivate-mark))
-
 (defun mouse-highlight-toggle (click)
   (interactive "e")
   (if (region-active-p) (highlight-selection) (progn (mouse-set-point click) (highlight-point-toggle))))
 (global-set-key (kbd "<mouse-3>") 'mouse-highlight-toggle)
 
 (defun highlight-toggle ()
-  (interactive (if (region-active-p) (highlight-selection) (highlight-point-toggle))))
+  (interactive)
+  (if (region-active-p) (highlight-selection) (highlight-point-toggle)))
 (global-set-key (kbd "<f10>") 'highlight-toggle)
 
 (add-hook 'ggtags-global-mode-hook
@@ -466,7 +463,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Liberation Mono" :foundry "1ASC" :slant normal :weight normal :height 128 :width normal))))
+ '(default ((t (:family "Liberation Mono" :foundry "1ASC" :slant normal :weight normal :height 112 :width normal))))
  '(line-number ((t (:foreground "black"))))
  '(mode-line ((t (:background "grey75" :foreground "black"))))
  '(mode-line-inactive ((t (:background "grey75" :foreground "black" :weight light)))))

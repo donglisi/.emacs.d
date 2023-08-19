@@ -544,14 +544,15 @@ the major mode specifies support for Font Lock."
          (isearch-no-upper-case-p regexp t)
        case-fold-search))))
 
-(defun hi-lock-face-symbol-at-point2 (regexp1)
+(defun highlight-selection ()
   (interactive)
-  (let* ((regexp regexp1)
+  (let* ((regexp (buffer-substring (region-beginning) (region-end)))
 	 (hi-lock-auto-select-face t)
 	 (face (hi-lock-read-face-name)))
     (or (facep face) (setq face 'hi-yellow))
     (unless hi-lock-mode (hi-lock-mode 1))
-    (hi-lock-set-pattern regexp face)))
+    (hi-lock-set-pattern regexp face))
+  (deactivate-mark))
 
 (defun hi-lock-keyword->face (keyword)
   (cadr (cadr (cadr keyword))))    ; Keyword looks like (REGEXP (0 'FACE) ...).
