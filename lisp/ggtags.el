@@ -2400,7 +2400,8 @@ Invert the match when called with a prefix arg \\[universal-argument]."
 (setq ggtags-local-grep nil)
 (defun ggtags-local ()
   (interactive)
-  (setq ggtags-local-grep t))
+  (setq ggtags-local-grep t)
+  (message "ggtags-local"))
 
 (defun ggtags-reference (pattern &optional invert-match)
   (interactive (list (ggtags-read-tag 'definition 'confirm
