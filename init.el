@@ -80,6 +80,7 @@
 (global-set-key (kbd "<home>") 'beginning-of-buffer)
 (global-set-key (kbd "<end>") 'end-of-buffer)
 (global-set-key (kbd "C-x C-p") 'find-file-at-point)
+(global-set-key (kbd "C-c f") (lambda () (interactive) (message (which-function))))
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
 (global-set-key (kbd "M-m") 'man)
 (global-set-key (kbd "C-M-l") (lambda () (interactive) (recenter-top-bottom -1)))
