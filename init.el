@@ -6,6 +6,7 @@
 (load "~/.emacs.d/28.1/tramp-sh.el")
 (load "~/.emacs.d/28.1/buff-menu.el")
 (load "~/.emacs.d/28.1/hi-lock.el")
+(load "/home/d/.emacs/share/emacs/28.1/lisp/progmodes/which-func.el.gz")
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (load "~/.emacs.d/lisp/wo-ctrl-c.el")
