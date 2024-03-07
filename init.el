@@ -1,3 +1,6 @@
+(load "~/.emacs.d/lisp/buff-menu.el")
+(load "~/.emacs.d/lisp/hi-lock.el")
+(load "~/.emacs.d/lisp/simple.el")
 (load "~/.emacs.d/lisp/minibuffer.el")
 
 (menu-bar-mode 0)
