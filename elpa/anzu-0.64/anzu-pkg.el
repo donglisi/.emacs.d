@@ -1,0 +1,2 @@
+;; Generated package description from anzu.el  -*- no-byte-compile: t -*-
+(define-package "anzu" "0.64" "Show number of matches in mode-line while searching" '((emacs "25.1")) :authors '(("Syohei YOSHIDA" . "syohex@gmail.com")) :maintainer '("Neil Okamoto" . "neil.okamoto+melpa@gmail.com") :url "https://github.com/emacsorphanage/anzu")

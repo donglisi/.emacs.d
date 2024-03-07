@@ -1,3 +1,5 @@
+(load "~/.emacs.d/lisp/minibuffer.el")
+
 (menu-bar-mode 0)
 (global-font-lock-mode 0)
 (global-eldoc-mode 0)
