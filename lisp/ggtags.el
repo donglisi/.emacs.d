@@ -2415,5 +2415,7 @@ Invert the match when called with a prefix arg \\[universal-argument]."
   (ggtags-check-project)
   (ggtags-global-start cmd))
 
+(setq ggtags-highlight-tag nil)
+
 (provide 'ggtags)
 ;;; ggtags.el ends here

@@ -10,6 +10,8 @@
 (require 'origin-point-position)
 (require 'ggtags)
 (require 'fzf)
+(require 'isearch-plus)
+(require 'minibuffer-find-file)
 
 (menu-bar-mode 0)
 (global-font-lock-mode 0)
@@ -29,16 +31,11 @@
 (setq show-help-function nil)
 (setq inhibit-startup-screen t)
 (setq auto-save-list-file-prefix nil)
-(setq lazy-highlight-initial-delay 0)
 (setq make-backup-files nil)
 (setq auto-save-default nil)
 (setq mouse-drag-copy-region t)
 (setq read-file-name-completion-ignore-case t)
-(setq next-error-highlight nil)
-(setq minibuffer-message-timeout 0.5)
-(setq ggtags-highlight-tag nil)
 (setq scroll-step 1)
-(setq lazy-highlight-cleanup t)
 
 (setq-default frame-title-format '("emacs"))
 (setq-default mouse-1-click-follows-link nil)
@@ -131,53 +128,6 @@
 (global-set-key (kbd "<mouse-9>") 'switch-buffer-toggle)
 (global-set-key (kbd "<f4>") 'switch-buffer-toggle)
 
-(setq minibuffer-origin-path "")
-
-(defun minibuffer-path-up ()
-  (interactive)
-  (let ((path (minibuffer-contents)))
-    (setq minibuffer-origin-path path)
-    (delete-minibuffer-contents)
-    (insert (replace-regexp-in-string "/[^/]*/?$" "/" path)))
-  (minibuffer-completion-help))
-
-(defun minibuffer-path-origin ()
-  (interactive)
-  (delete-minibuffer-contents)
-  (insert minibuffer-origin-path)
-  (minibuffer-completion-help))
-
-(defun find-file-set-key ()
-  (interactive)
-  (local-set-key (kbd "TAB") (lambda () (interactive (progn (minibuffer-complete) (minibuffer-completion-help)))))
-  (local-set-key (kbd "M-DEL") (lambda () (interactive) (backward-kill-word 1) (minibuffer-completion-help)))
-  (local-set-key (kbd "M-\\") 'minibuffer-path-up)
-  (local-set-key (kbd "/") (lambda () (interactive) (insert "/") (minibuffer-completion-help)))
-  (minibuffer-completion-help))
-
-(defun find-file-root ()
-  (interactive)
-  (let ((inhibit-message t) (default-directory "/"))
-    (minibuffer-with-setup-hook 'find-file-set-key (call-interactively 'find-file))))
-(global-set-key (kbd "C-x M-f") 'find-file-root)
-
-(defun find-file-current ()
-  (interactive)
-  (let ((inhibit-message t) (default-directory (if (buffer-file-name) default-directory "~/")))
-    (minibuffer-with-setup-hook 'find-file-set-key (call-interactively 'find-file))))
-(global-set-key (kbd "C-x C-f") 'find-file-current)
-
-(defun find-file-home ()
-  (interactive)
-  (let ((inhibit-message t) (default-directory "~/"))
-    (minibuffer-with-setup-hook 'find-file-set-key (call-interactively 'find-file))))
-(global-set-key (kbd "C-x f") 'find-file-home)
-
-(add-hook 'completion-list-mode-hook
-  (lambda ()
-    (local-set-key (kbd "<mouse-1>") (lambda () (interactive (progn (choose-completion) (execute-kbd-macro (kbd "TAB"))))))
-    (local-set-key (kbd "<mouse-2>") 'keyboard-escape-quit)))
-
 (defun imenu-completion ()
   (interactive)
   (minibuffer-with-setup-hook 'minibuffer-completion-help (call-interactively 'imenu)))
@@ -212,44 +162,6 @@
     (progn (delete-other-windows) (kill-buffer (get-buffer "*Buffer List*")))
     (list-buffers)))
 (global-set-key (kbd "<mouse-8>") 'buffer-list-toggle)
-
-(defun isearch-wrapper (flag)
-  (interactive)
-  (if (region-active-p)
-    (let ((selection (buffer-substring-no-properties (region-beginning) (region-end))))      
-      (goto-char (region-beginning))
-      (isearch-mode nil)
-      (isearch-yank-string selection)
-      (deactivate-mark))
-    (if flag (isearch-forward nil t) (isearch-backward nil t))))
-
-(defun isearch-forward+ ()
-  (interactive)
-  (isearch-wrapper t))
-(define-key global-map "\C-s" 'isearch-forward+)
-
-(defun isearch-backward+ ()
-  (interactive)
-  (isearch-wrapper nil))
-(define-key global-map "\C-r" 'isearch-backward+)
-
-(defun isearch-repeat-forward+ ()
-  (interactive)
-  (unless isearch-forward
-    (goto-char isearch-other-end))
-  (isearch-repeat-forward)
-  (unless isearch-success
-    (isearch-repeat-forward)))
-(define-key isearch-mode-map (kbd "C-s") 'isearch-repeat-forward+)
-
-(defun isearch-repeat-backward+ ()
-  (interactive)
-  (when (and isearch-forward isearch-other-end)
-    (goto-char isearch-other-end))
-  (isearch-repeat-backward)
-  (unless isearch-success
-    (isearch-repeat-backward)))
-(define-key isearch-mode-map (kbd "C-r") 'isearch-repeat-backward+)
 
 (defun highlight-point-toggle ()
   (interactive)
