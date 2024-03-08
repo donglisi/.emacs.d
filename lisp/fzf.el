@@ -340,8 +340,6 @@ including file names with embedded colons.
 
 See `fzf--file-lnum-regexp' and `fzf--file-rnum-lnum-regexp' as examples.")
 
-(setq origin-point-position nil)
-
 ;; ---------------------------------------------------------------------------
 ;; Internal helper function
 (defun fzf--read-for (operation prompt)
@@ -418,20 +416,18 @@ The ANSI color sequences are filtered when Emacs runs in termcap mode."
 ;; Internal helper function
 (defun fzf--close()
   "Cleanup hooks and process."
-  ;; Remove hook first so it doesn't trigger when process is killed
+  ; Remove hook first so it doesn't trigger when process is killed
   (when fzf--hook (advice-remove 'term-handle-exit fzf--hook))
   (setq fzf--hook nil)
-  ;; Kill process so user isn't prompted
-  (let ((process-name (file-name-nondirectory fzf/executable)))
-    (when (get-process process-name)
-      (delete-process (get-process process-name))))
 
-  ;; Kill buffer and restore window
+  ; Kill process so user isn't prompted
+  (when (get-process fzf/executable)
+    (delete-process (get-process fzf/executable)))
+
+  ; Kill buffer and restore window
   (when (get-buffer fzf/buffer-name)
     (kill-buffer fzf/buffer-name)
-    (jump-to-register fzf--window-register)
-    (goto-char origin-point-position)
-    (setq origin-point-position nil)))
+    (jump-to-register fzf--window-register)))
 
 ;; Internal helper function
 (defun fzf--pass-through (target _text _msg _process-name)
@@ -496,9 +492,7 @@ The returned lambda requires extra context information:
       ;; Kill the fzf buffer and restore the previous window configuration.
       (kill-buffer fzf/buffer-name)
       (jump-to-register fzf--window-register)
-      (if (string= exit-code "0")
-          (message "FZF selection: %s" target)
-        (message "FZF error: %s" exit-code))
+      (message (format "FZF exited with code %s" exit-code))
       ;; Extract file/line from fzf only if fzf was successful.
       (when (string= "0" exit-code)
         ;; Re-Establish the fzf--extractor-list required by original caller
@@ -545,8 +539,7 @@ The returned lambda requires extra context information:
       (setq default-directory (or directory "")))
     (split-window-vertically window-height)
     (when fzf/position-bottom (other-window 1))
-    (make-term (file-name-nondirectory fzf/executable)
-               "sh" nil "-c" sh-cmd)
+    (make-term fzf/executable "sh" nil "-c" sh-cmd)
     (switch-to-buffer buf)
 
     ;; Disable minor modes that interfere with rendering while fzf is running
@@ -640,9 +633,7 @@ to use other mechanisms."
       (fzf--start (fzf--resolve-directory) #'fzf--action-find-file))))
 
 ;; Public utility
-(defun fzf-with-command (command action
-                                 &optional directory as-filter initq
-                                 file-pattern validator)
+(defun fzf-with-command (command action &optional directory as-filter initq file-pattern)
   "Run `fzf` on the output of COMMAND.
 
 If COMMAND is nil, use the default `FZF_DEFAULT_COMMAND`.
@@ -658,33 +649,25 @@ If AS-FILTER is non-nil, use command as the narrowing filter instead of fzf,
 with INITQ as the initial query, as explained here:
 https://github.com/junegunn/fzf/blob/master/ADVANCED.md#using-fzf-as-interactive-ripgrep-launcher
 E.g. If COMMAND is grep, use grep as a narrowing filter to interactively
-reduce the search space, instead of using fzf to filter (but not narrow).
-
-Use the FILE-PATTERN to specify a grep file pattern different than what is
-specified by the fzf/grep-file-pattern  user-option.
-
-The default validator is `fzf--pass-through', specify another one by passing
-it into the VALIDATOR argument."
-  (let ((fzf--target-validator (or validator
-                                   (function fzf--pass-through))))
-    (if command
-        (let
-            ((process-environment (cons
-                                   (concat "FZF_DEFAULT_COMMAND=" command "")
-                                   process-environment))
-             (args (if as-filter
-                       (concat fzf/args
-                               " --disabled"
-                               " --query " initq
-                               " --bind \"change:reload:sleep 0.1; "
-                               fzf/grep-command
-                               (format " {q} %s || true\""
-                                       (or (fzf---grep-file-pattern-for
-                                            file-pattern :forced)
-                                           "")))
-                     fzf/args)))
-          (fzf--start directory action args))
-      (fzf--start directory action))))
+reduce the search space, instead of using fzf to filter (but not narrow)."
+  (if command
+      (let
+          ((process-environment (cons
+                                 (concat "FZF_DEFAULT_COMMAND=" command "")
+                                 process-environment))
+           (args (if as-filter
+                     (concat fzf/args
+                             " --disabled"
+                             " --query " initq
+                             " --bind \"change:reload:sleep 0.1; "
+                             fzf/grep-command
+                             (format " {q} %s || true\""
+                                     (or (fzf---grep-file-pattern-for
+                                          file-pattern :forced)
+                                         "")))
+                   fzf/args)))
+        (fzf--start directory action args))
+    (fzf--start directory action)))
 
 ;; Internal helper function
 (defun fzf--with-command-and-args (command action
@@ -819,7 +802,7 @@ TARGET is a line produced by 'cat -n'."
                (lambda (x)
                  (let ((f (expand-file-name x d)))
                    (when (file-exists-p f)
-                     (progn (goto-char origin-point-position) (setq origin-point-position nil) (find-file f))))))))
+                     (find-file f)))))))
 
 ;;;###autoload
 (defun fzf-find-file-in-dir (&optional directory)
@@ -1122,14 +1105,6 @@ File name & Line extraction:
     (fzf-with-entries
      (list "a" "b" "c")
      (lambda (x) (print x)))))
-
-(defun fzfk ()
-  (interactive)
-  (setq origin-point-position (window-point))
-  (let ((default-directory (or (car (dir-locals-find-file (or (buffer-file-name) "/nil"))) "~/")))
-    (goto-char (window-start))
-    (fzf-find-file)))
-(global-set-key (kbd "C-x C-t") 'fzfk)
 
 ;; ---------------------------------------------------------------------------
 (provide 'fzf)
