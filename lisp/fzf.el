@@ -1123,7 +1123,6 @@ File name & Line extraction:
      (list "a" "b" "c")
      (lambda (x) (print x)))))
 
-;;  (let ((default-directory "~/linux"))
 (defun fzfk ()
   (interactive)
   (setq origin-point-position (window-point))

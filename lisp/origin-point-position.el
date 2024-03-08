@@ -25,4 +25,8 @@
         (set-window-point ow origin-point-position-other)
         (setq origin-point-position-other nil)))))
 
+(add-hook 'minibuffer-setup-hook (lambda () (if (get-buffer-window "*Completions*") (save-point-position nil))))
+(add-hook 'minibuffer-exit-hook (lambda () (goto-origin-point-position nil)))
+(add-hook 'echo-area-clear-hook (lambda () (goto-origin-point-position t)))
+
 (provide 'origin-point-position)

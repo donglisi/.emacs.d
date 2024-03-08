@@ -271,10 +271,6 @@
     (setcar (cdr (assoc "Class" imenu-generic-expression ))
       "^\\(template[    ]*<[^>]+>[  ]*\\)?\\(class\\|struct\\|union\\|typedef struct\\)[     ]+\\([[:alnum:]_]+\\(<[^>]+>\\)?\\)\\([     \n]\\|\\\\\n\\)*[:{]")))
 
-(add-hook 'minibuffer-setup-hook (lambda () (if (get-buffer-window "*Completions*") (save-point-position nil))))
-(add-hook 'minibuffer-exit-hook (lambda () (goto-origin-point-position nil)))
-(add-hook 'echo-area-clear-hook (lambda () (goto-origin-point-position t)))
-
 (defun translation-word ()
   (interactive)
   (let* ((default-directory "~/")
