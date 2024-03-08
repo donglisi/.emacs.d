@@ -44,7 +44,6 @@
   (when line-number-mode (when (and (not (buffer-modified-p)) my-mode-line-buffer-line-count) my-mode-line-buffer-line-count)))))
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
-(add-to-list 'auto-mode-alist '("\\Makefile\\'" . fundamental-mode))
 (defalias 'yes-or-no-p 'y-or-n-p)
 (set-face-attribute 'region nil :background "#666" :foreground "#ffffff")
 (put 'upcase-region 'disabled nil)
@@ -111,10 +110,13 @@
 (global-set-key (kbd "C-x C-o") 'kill-other-buffers)
 
 (defvar killed-file-list nil)
+
 (defun add-file-to-killed-file-list ()
   (when buffer-file-name
     (push buffer-file-name killed-file-list)))
+
 (add-hook 'kill-buffer-hook 'add-file-to-killed-file-list)
+
 (defun reopen-killed-file ()
   "Reopen the most recently killed file, if one exists."
   (interactive)
@@ -135,9 +137,9 @@
 
 (add-hook 'emacs-startup-hook
   (lambda ()
-    (global-set-key (kbd "<mouse-6>") (lambda () (interactive)
+    (global-set-key (kbd "<wheel-left>") (lambda () (interactive)
       (if (get-buffer-window "*Completions*") (minibuffer-path-up) (find-file-current))))
-    (global-set-key (kbd "<mouse-7>") (lambda () (interactive)
+    (global-set-key (kbd "<wheel-right>") (lambda () (interactive)
       (if (get-buffer-window "*Completions*") (minibuffer-path-origin) (imenu-completion))))))
 
 (defun switch-buffer-completion ()
@@ -162,7 +164,6 @@
     (progn (delete-other-windows) (kill-buffer (get-buffer "*Buffer List*")))
     (list-buffers)))
 (global-set-key (kbd "<mouse-8>") 'buffer-list-toggle)
-
 
 (add-hook 'c-mode-hook
   (defun my-c-mode-hook ()
