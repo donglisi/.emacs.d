@@ -2,6 +2,10 @@
 (load "~/.emacs.d/lisp/hi-lock.el")
 (load "~/.emacs.d/lisp/simple.el")
 (load "~/.emacs.d/lisp/minibuffer.el")
+(load "~/.emacs.d/lisp/goto-last-change.el")
+(load "~/.emacs.d/lisp/wo-ctrl-c.el")
+
+(require 'which-func)
 
 (menu-bar-mode 0)
 (global-font-lock-mode 0)
@@ -332,6 +336,15 @@
 (add-hook 'after-revert-hook 'my-mode-line-count-lines)
 (add-hook 'dired-after-readin-hook 'my-mode-line-count-lines)
 
+(defun fzfk () 
+  (interactive)
+  ;; (setq origin-point-position (window-point))
+  (delete-ggtags-global-buffer)
+  (let ((default-directory (if (and (buffer-file-name) (ggtags-current-project-root)) (ggtags-current-project-root) "/home/d/linux")))
+    (goto-char (window-start))
+    (fzf-find-file)))
+(global-set-key (kbd "C-x C-t") 'fzfk)
+
 (customize-set-variable 'search-whitespace-regexp nil)
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -362,7 +375,7 @@
  '(mouse-wheel-scroll-amount '(5 ((shift) . hscroll) ((meta)) ((control) . text-scale)))
  '(next-error-highlight-no-select nil)
  '(next-screen-context-lines 1)
- '(package-selected-packages '(anzu))
+ '(package-selected-packages '(fzf anzu))
  '(read-buffer-completion-ignore-case t)
  '(show-paren-mode t)
  '(tool-bar-mode nil)
