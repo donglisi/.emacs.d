@@ -493,6 +493,8 @@ The returned lambda requires extra context information:
       (kill-buffer fzf/buffer-name)
       (jump-to-register fzf--window-register)
       (message (format "FZF exited with code %s" exit-code))
+      (goto-char origin-point-position)
+      (setq origin-point-position nil)
       ;; Extract file/line from fzf only if fzf was successful.
       (when (string= "0" exit-code)
         ;; Re-Establish the fzf--extractor-list required by original caller
@@ -1105,6 +1107,14 @@ File name & Line extraction:
     (fzf-with-entries
      (list "a" "b" "c")
      (lambda (x) (print x)))))
+
+(defun fzfk ()
+  (interactive)
+  (setq origin-point-position (window-point))
+  (let ((default-directory (or (car (dir-locals-find-file (or (buffer-file-name) "/nil"))) "~/")))
+    (goto-char (window-start))
+    (fzf-find-file)))
+(global-set-key (kbd "C-x C-t") 'fzfk)
 
 ;; ---------------------------------------------------------------------------
 (provide 'fzf)
