@@ -1111,7 +1111,7 @@ File name & Line extraction:
 (defun fzfk ()
   (interactive)
   (setq origin-point-position (window-point))
-  (let ((default-directory (or (car (dir-locals-find-file (or (buffer-file-name) "/nil"))) "~/")))
+  (let ((default-directory (or (car (dir-locals-find-file (or (if (equal major-mode 'dired-mode) default-directory (buffer-file-name)) "/nil"))) "~/")))
     (goto-char (window-start))
     (fzf-find-file)))
 (global-set-key (kbd "C-x C-t") 'fzfk)
