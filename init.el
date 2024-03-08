@@ -163,20 +163,6 @@
     (list-buffers)))
 (global-set-key (kbd "<mouse-8>") 'buffer-list-toggle)
 
-(defun highlight-point-toggle ()
-  (interactive)
-  (let ((str (get-char-property (point) 'hi-lock-overlay-regexp)))
-      (if str (hi-lock-unface-buffer str) (hi-lock-face-symbol-at-point))))
-
-(defun mouse-highlight-toggle (click)
-  (interactive "e")
-  (if (region-active-p) (highlight-selection) (progn (mouse-set-point click) (highlight-point-toggle))))
-(global-set-key (kbd "<mouse-3>") 'mouse-highlight-toggle)
-
-(defun highlight-toggle ()
-  (interactive)
-  (if (region-active-p) (highlight-selection) (highlight-point-toggle)))
-(global-set-key (kbd "<f10>") 'highlight-toggle)
 
 (add-hook 'c-mode-hook
   (defun my-c-mode-hook ()
