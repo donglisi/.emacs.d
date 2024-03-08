@@ -340,6 +340,8 @@ including file names with embedded colons.
 
 See `fzf--file-lnum-regexp' and `fzf--file-rnum-lnum-regexp' as examples.")
 
+(setq origin-point-position nil)
+
 ;; ---------------------------------------------------------------------------
 ;; Internal helper function
 (defun fzf--read-for (operation prompt)
@@ -427,7 +429,9 @@ The ANSI color sequences are filtered when Emacs runs in termcap mode."
   ;; Kill buffer and restore window
   (when (get-buffer fzf/buffer-name)
     (kill-buffer fzf/buffer-name)
-    (jump-to-register fzf--window-register)))
+    (jump-to-register fzf--window-register)
+    (goto-char origin-point-position)
+    (setq origin-point-position nil)))
 
 ;; Internal helper function
 (defun fzf--pass-through (target _text _msg _process-name)
@@ -815,7 +819,7 @@ TARGET is a line produced by 'cat -n'."
                (lambda (x)
                  (let ((f (expand-file-name x d)))
                    (when (file-exists-p f)
-                     (find-file f)))))))
+                     (progn (goto-char origin-point-position) (setq origin-point-position nil) (find-file f))))))))
 
 ;;;###autoload
 (defun fzf-find-file-in-dir (&optional directory)
@@ -1118,6 +1122,15 @@ File name & Line extraction:
     (fzf-with-entries
      (list "a" "b" "c")
      (lambda (x) (print x)))))
+
+;;  (let ((default-directory "~/linux"))
+(defun fzfk ()
+  (interactive)
+  (setq origin-point-position (window-point))
+  (let ((default-directory (if (and (buffer-file-name) (ggtags-current-project-root)) (ggtags-current-project-root) "~/linux")))
+    (goto-char (window-start))
+    (fzf-find-file)))
+(global-set-key (kbd "C-x C-t") 'fzfk)
 
 ;; ---------------------------------------------------------------------------
 (provide 'fzf)

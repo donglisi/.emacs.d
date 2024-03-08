@@ -2,10 +2,14 @@
 (load "~/.emacs.d/lisp/hi-lock.el")
 (load "~/.emacs.d/lisp/simple.el")
 (load "~/.emacs.d/lisp/minibuffer.el")
-(load "~/.emacs.d/lisp/goto-last-change.el")
-(load "~/.emacs.d/lisp/wo-ctrl-c.el")
-
 (require 'which-func)
+
+(add-to-list 'load-path "~/.emacs.d/lisp")
+(require 'goto-last-change)
+(require 'wo-ctrl-c)
+(require 'origin-point-position)
+(require 'ggtags)
+(require 'fzf)
 
 (menu-bar-mode 0)
 (global-font-lock-mode 0)
@@ -267,33 +271,6 @@
     (setcar (cdr (assoc "Class" imenu-generic-expression ))
       "^\\(template[    ]*<[^>]+>[  ]*\\)?\\(class\\|struct\\|union\\|typedef struct\\)[     ]+\\([[:alnum:]_]+\\(<[^>]+>\\)?\\)\\([     \n]\\|\\\\\n\\)*[:{]")))
 
-(setq origin-point-position nil)
-(setq origin-point-position-other nil)
-
-(defun save-point-position (flag)
-  (let* ((l (window-list (selected-frame)))
-         (w (if flag (car l) (nth 1 l)))
-         (ow (if flag (nth 1 l) (nth 2 l))))
-    (setq origin-point-position (window-point w))
-    (set-window-point w (window-start w))
-    (if ow
-      (progn
-        (setq origin-point-position-other (window-point ow))
-        (set-window-point ow (window-start ow))))))
-
-(defun goto-origin-point-position (flag)
-  (let* ((l (window-list (selected-frame)))
-         (w (if flag (car l) (nth 1 l)))
-         (ow (if flag (nth 1 l) (nth 2 l))))
-    (if origin-point-position
-      (progn
-        (set-window-point w origin-point-position)
-        (setq origin-point-position nil)))
-    (if origin-point-position-other
-      (progn
-        (set-window-point ow origin-point-position-other)
-        (setq origin-point-position-other nil)))))
-
 (add-hook 'minibuffer-setup-hook (lambda () (if (get-buffer-window "*Completions*") (save-point-position nil))))
 (add-hook 'minibuffer-exit-hook (lambda () (goto-origin-point-position nil)))
 (add-hook 'echo-area-clear-hook (lambda () (goto-origin-point-position t)))
@@ -336,15 +313,6 @@
 (add-hook 'after-revert-hook 'my-mode-line-count-lines)
 (add-hook 'dired-after-readin-hook 'my-mode-line-count-lines)
 
-(defun fzfk () 
-  (interactive)
-  ;; (setq origin-point-position (window-point))
-  (delete-ggtags-global-buffer)
-  (let ((default-directory (if (and (buffer-file-name) (ggtags-current-project-root)) (ggtags-current-project-root) "/home/d/linux")))
-    (goto-char (window-start))
-    (fzf-find-file)))
-(global-set-key (kbd "C-x C-t") 'fzfk)
-
 (customize-set-variable 'search-whitespace-regexp nil)
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -375,7 +343,7 @@
  '(mouse-wheel-scroll-amount '(5 ((shift) . hscroll) ((meta)) ((control) . text-scale)))
  '(next-error-highlight-no-select nil)
  '(next-screen-context-lines 1)
- '(package-selected-packages '(fzf anzu))
+ '(package-selected-packages '(anzu))
  '(read-buffer-completion-ignore-case t)
  '(show-paren-mode t)
  '(tool-bar-mode nil)

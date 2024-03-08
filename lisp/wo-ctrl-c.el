@@ -42,4 +42,5 @@ The value is actually a list containing the original local map as element.")
 
 ;; `find-file-noselect' sets `buffer-read-only' directly:
 (add-hook 'find-file-hook #'wo-ctrl-c-when-read-only)
+
 (provide 'wo-ctrl-c)
