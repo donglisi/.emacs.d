@@ -243,5 +243,6 @@
  '(show-paren-mode t)
  '(tool-bar-mode nil)
  '(use-dialog-box nil)
+ '(use-short-answers t)
  '(warning-suppress-types '((comp)))
- '(xref-marker-ring-length 1000))
+ '(xref-marker-ring-length 1000 t))
