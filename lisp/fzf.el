@@ -1126,7 +1126,7 @@ File name & Line extraction:
 (defun fzfk ()
   (interactive)
   (setq origin-point-position (window-point))
-  (let ((default-directory (if (and (buffer-file-name) (ggtags-current-project-root)) (ggtags-current-project-root) "~/linux")))
+  (let ((default-directory (or (car (dir-locals-find-file (or (buffer-file-name) "/nil"))) "~/")))
     (goto-char (window-start))
     (fzf-find-file)))
 (global-set-key (kbd "C-x C-t") 'fzfk)
